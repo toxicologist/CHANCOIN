@@ -4,13 +4,13 @@
     <name>AboutDialog</name>
     <message>
         <location filename="../forms/aboutdialog.ui" line="+14"/>
-        <source>About ChanCoin</source>
-        <translation>Sobre ChanCoin</translation>
+        <source>About Litecoin</source>
+        <translation>Sobre Litecoin</translation>
     </message>
     <message>
         <location line="+39"/>
-        <source>&lt;b&gt;ChanCoin&lt;/b&gt; version</source>
-        <translation>&lt;b&gt;ChanCoin&lt;/b&gt; versió</translation>
+        <source>&lt;b&gt;Litecoin&lt;/b&gt; version</source>
+        <translation>&lt;b&gt;Litecoin&lt;/b&gt; versió</translation>
     </message>
     <message>
         <location line="+57"/>
@@ -29,7 +29,7 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="+0"/>
-        <source>The ChanCoin developers</source>
+        <source>The Litecoin developers</source>
         <translation type="unfinished"/>
     </message>
 </context>
@@ -62,8 +62,8 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location filename="../addressbookpage.cpp" line="+63"/>
-        <source>These are your ChanCoin addresses for receiving payments. You may want to give a different one to each sender so you can keep track of who is paying you.</source>
-        <translation>Aquestes són les teves adreces ChanCoin per a rebre pagaments. Pot interesar-te proveïr diferents adreces a cadascun dels enviadors així pots identificar qui et va pagant.</translation>
+        <source>These are your Litecoin addresses for receiving payments. You may want to give a different one to each sender so you can keep track of who is paying you.</source>
+        <translation>Aquestes són les teves adreces Litecoin per a rebre pagaments. Pot interesar-te proveïr diferents adreces a cadascun dels enviadors així pots identificar qui et va pagant.</translation>
     </message>
     <message>
         <location filename="../forms/addressbookpage.ui" line="+14"/>
@@ -77,8 +77,8 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="+11"/>
-        <source>Sign a message to prove you own a ChanCoin address</source>
-        <translation>Signa el missatge per provar que ets propietari de l&apos;adreça ChanCoin</translation>
+        <source>Sign a message to prove you own a Litecoin address</source>
+        <translation>Signa el missatge per provar que ets propietari de l&apos;adreça Litecoin</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -102,8 +102,8 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="-44"/>
-        <source>Verify a message to ensure it was signed with a specified ChanCoin address</source>
-        <translation>Verificar un missatge per asegurar-se que ha estat signat amb una adreça ChanCoin específica</translation>
+        <source>Verify a message to ensure it was signed with a specified Litecoin address</source>
+        <translation>Verificar un missatge per asegurar-se que ha estat signat amb una adreça Litecoin específica</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -117,8 +117,8 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location filename="../addressbookpage.cpp" line="-5"/>
-        <source>These are your ChanCoin addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>Aquestes són la seva adreça de ChanCoin per enviar els pagaments. Sempre revisi la quantitat i l&apos;adreça del destinatari abans transferència de monedes.</translation>
+        <source>These are your Litecoin addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>Aquestes són la seva adreça de Litecoin per enviar els pagaments. Sempre revisi la quantitat i l&apos;adreça del destinatari abans transferència de monedes.</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -243,8 +243,8 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="+1"/>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR CHANCOINS&lt;/b&gt;!</source>
-        <translation>Advertència: Si encripteu el vostre moneder i perdeu la constrasenya, &lt;b&gt;PERDREU TOTS ELS VOSTRES CHANCOINS&lt;/b&gt;!</translation>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR LITECOINS&lt;/b&gt;!</source>
+        <translation>Advertència: Si encripteu el vostre moneder i perdeu la constrasenya, &lt;b&gt;PERDREU TOTS ELS VOSTRES LITECOINS&lt;/b&gt;!</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -270,8 +270,8 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="-56"/>
-        <source>ChanCoin will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your chancoins from being stolen by malware infecting your computer.</source>
-        <translation>ChanCoin es tancarà ara per acabar el procés d&apos;encriptació. Recorda que encriptar el teu moneder no protegeix completament els teus chancoins de ser robades per programari maliciós instal·lat al teu ordinador.</translation>
+        <source>Litecoin will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your litecoins from being stolen by malware infecting your computer.</source>
+        <translation>Litecoin es tancarà ara per acabar el procés d&apos;encriptació. Recorda que encriptar el teu moneder no protegeix completament els teus litecoins de ser robades per programari maliciós instal·lat al teu ordinador.</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -369,8 +369,8 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="+4"/>
-        <source>Show information about ChanCoin</source>
-        <translation>Mostra informació sobre ChanCoin</translation>
+        <source>Show information about Litecoin</source>
+        <translation>Mostra informació sobre Litecoin</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -414,13 +414,13 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="-347"/>
-        <source>Send coins to a ChanCoin address</source>
-        <translation>Enviar monedes a una adreça ChanCoin</translation>
+        <source>Send coins to a Litecoin address</source>
+        <translation>Enviar monedes a una adreça Litecoin</translation>
     </message>
     <message>
         <location line="+49"/>
-        <source>Modify configuration options for ChanCoin</source>
-        <translation>Modificar les opcions de configuració per chancoin</translation>
+        <source>Modify configuration options for Litecoin</source>
+        <translation>Modificar les opcions de configuració per litecoin</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -450,8 +450,8 @@ This product includes software developed by the OpenSSL Project for use in the O
     <message>
         <location line="-165"/>
         <location line="+530"/>
-        <source>ChanCoin</source>
-        <translation>ChanCoin</translation>
+        <source>Litecoin</source>
+        <translation>Litecoin</translation>
     </message>
     <message>
         <location line="-530"/>
@@ -475,8 +475,8 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="+22"/>
-        <source>&amp;About ChanCoin</source>
-        <translation>&amp;Sobre ChanCoin</translation>
+        <source>&amp;About Litecoin</source>
+        <translation>&amp;Sobre Litecoin</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -495,13 +495,13 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="+7"/>
-        <source>Sign messages with your ChanCoin addresses to prove you own them</source>
-        <translation>Signa el missatges amb la seva adreça de ChanCoin per provar que les poseeixes</translation>
+        <source>Sign messages with your Litecoin addresses to prove you own them</source>
+        <translation>Signa el missatges amb la seva adreça de Litecoin per provar que les poseeixes</translation>
     </message>
     <message>
         <location line="+2"/>
-        <source>Verify messages to ensure they were signed with specified ChanCoin addresses</source>
-        <translation>Verificar els missatges per assegurar-te que han estat signades amb una adreça ChanCoin específica.</translation>
+        <source>Verify messages to ensure they were signed with specified Litecoin addresses</source>
+        <translation>Verificar els missatges per assegurar-te que han estat signades amb una adreça Litecoin específica.</translation>
     </message>
     <message>
         <location line="+28"/>
@@ -531,13 +531,13 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="+47"/>
-        <source>ChanCoin client</source>
-        <translation>Client ChanCoin</translation>
+        <source>Litecoin client</source>
+        <translation>Client Litecoin</translation>
     </message>
     <message numerus="yes">
         <location line="+141"/>
-        <source>%n active connection(s) to ChanCoin network</source>
-        <translation><numerusform>%n connexió activa a la xarxa ChanCoin</numerusform><numerusform>%n connexions actives a la xarxa ChanCoin</numerusform></translation>
+        <source>%n active connection(s) to Litecoin network</source>
+        <translation><numerusform>%n connexió activa a la xarxa Litecoin</numerusform><numerusform>%n connexions actives a la xarxa Litecoin</numerusform></translation>
     </message>
     <message>
         <location line="+22"/>
@@ -647,8 +647,8 @@ Address: %4
     <message>
         <location line="-23"/>
         <location line="+23"/>
-        <source>URI can not be parsed! This can be caused by an invalid ChanCoin address or malformed URI parameters.</source>
-        <translation>la URI no pot ser processada! Això es pot ser causat per una adreça ChanCoin invalida o paràmetres URI malformats.</translation>
+        <source>URI can not be parsed! This can be caused by an invalid Litecoin address or malformed URI parameters.</source>
+        <translation>la URI no pot ser processada! Això es pot ser causat per una adreça Litecoin invalida o paràmetres URI malformats.</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -662,8 +662,8 @@ Address: %4
     </message>
     <message>
         <location filename="../bitcoin.cpp" line="+111"/>
-        <source>A fatal error occurred. ChanCoin can no longer continue safely and will quit.</source>
-        <translation>Ha tingut lloc un error fatal. ChanCoin no pot continuar executant-se de manera segura i es tancará.</translation>
+        <source>A fatal error occurred. Litecoin can no longer continue safely and will quit.</source>
+        <translation>Ha tingut lloc un error fatal. Litecoin no pot continuar executant-se de manera segura i es tancará.</translation>
     </message>
 </context>
 <context>
@@ -728,8 +728,8 @@ Address: %4
     </message>
     <message>
         <location line="-5"/>
-        <source>The entered address &quot;%1&quot; is not a valid ChanCoin address.</source>
-        <translation>L&apos;adreça introduida &quot;%1&quot; no és una adreça ChanCoin valida.</translation>
+        <source>The entered address &quot;%1&quot; is not a valid Litecoin address.</source>
+        <translation>L&apos;adreça introduida &quot;%1&quot; no és una adreça Litecoin valida.</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -747,8 +747,8 @@ Address: %4
     <message>
         <location filename="../guiutil.cpp" line="+424"/>
         <location line="+12"/>
-        <source>ChanCoin-Qt</source>
-        <translation>ChanCoin-Qt</translation>
+        <source>Litecoin-Qt</source>
+        <translation>Litecoin-Qt</translation>
     </message>
     <message>
         <location line="-12"/>
@@ -810,13 +810,13 @@ Address: %4
     </message>
     <message>
         <location line="+31"/>
-        <source>Automatically start ChanCoin after logging in to the system.</source>
-        <translation>Iniciar automàticament ChanCoin després de l&apos;inici de sessió del sistema.</translation>
+        <source>Automatically start Litecoin after logging in to the system.</source>
+        <translation>Iniciar automàticament Litecoin després de l&apos;inici de sessió del sistema.</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>&amp;Start ChanCoin on system login</source>
-        <translation>&amp;Iniciar ChanCoin al inici de sessió del sistema.</translation>
+        <source>&amp;Start Litecoin on system login</source>
+        <translation>&amp;Iniciar Litecoin al inici de sessió del sistema.</translation>
     </message>
     <message>
         <location line="+35"/>
@@ -835,8 +835,8 @@ Address: %4
     </message>
     <message>
         <location line="+6"/>
-        <source>Automatically open the ChanCoin client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>Obrir el port del client de ChanCoin al router de forma automàtica. Això només funciona quan el teu router implementa UPnP i l&apos;opció està activada.</translation>
+        <source>Automatically open the Litecoin client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <translation>Obrir el port del client de Litecoin al router de forma automàtica. Això només funciona quan el teu router implementa UPnP i l&apos;opció està activada.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -845,8 +845,8 @@ Address: %4
     </message>
     <message>
         <location line="+7"/>
-        <source>Connect to the ChanCoin network through a SOCKS proxy (e.g. when connecting through Tor).</source>
-        <translation>Connectar a la xarxa ChanCoin a través de un SOCKS proxy (per exemple connectant a través de Tor).</translation>
+        <source>Connect to the Litecoin network through a SOCKS proxy (e.g. when connecting through Tor).</source>
+        <translation>Connectar a la xarxa Litecoin a través de un SOCKS proxy (per exemple connectant a través de Tor).</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -920,8 +920,8 @@ Address: %4
     </message>
     <message>
         <location line="+13"/>
-        <source>The user interface language can be set here. This setting will take effect after restarting ChanCoin.</source>
-        <translation>Aquí pots definir el llenguatge de l&apos;aplicatiu. Aquesta configuració tindrà efecte un cop es reiniciï ChanCoin.</translation>
+        <source>The user interface language can be set here. This setting will take effect after restarting Litecoin.</source>
+        <translation>Aquí pots definir el llenguatge de l&apos;aplicatiu. Aquesta configuració tindrà efecte un cop es reiniciï Litecoin.</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -935,8 +935,8 @@ Address: %4
     </message>
     <message>
         <location line="+9"/>
-        <source>Whether to show ChanCoin addresses in the transaction list or not.</source>
-        <translation>Mostrar adreces ChanCoin als llistats de transaccions o no.</translation>
+        <source>Whether to show Litecoin addresses in the transaction list or not.</source>
+        <translation>Mostrar adreces Litecoin als llistats de transaccions o no.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -987,8 +987,8 @@ Address: %4
     <message>
         <location line="-9"/>
         <location line="+9"/>
-        <source>This setting will take effect after restarting ChanCoin.</source>
-        <translation>Aquesta configuració tindrà efecte un cop es reiniciï ChanCoin.</translation>
+        <source>This setting will take effect after restarting Litecoin.</source>
+        <translation>Aquesta configuració tindrà efecte un cop es reiniciï Litecoin.</translation>
     </message>
     <message>
         <location line="+29"/>
@@ -1006,8 +1006,8 @@ Address: %4
     <message>
         <location line="+50"/>
         <location line="+166"/>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the ChanCoin network after a connection is established, but this process has not completed yet.</source>
-        <translation>La informació mostrada pot no estar al día. El teu moneder es sincronitza automàticament amb la xarxa ChanCoin un cop s&apos;ha establert connexió, però aquest proces no s&apos;ha completat encara.</translation>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Litecoin network after a connection is established, but this process has not completed yet.</source>
+        <translation>La informació mostrada pot no estar al día. El teu moneder es sincronitza automàticament amb la xarxa Litecoin un cop s&apos;ha establert connexió, però aquest proces no s&apos;ha completat encara.</translation>
     </message>
     <message>
         <location line="-124"/>
@@ -1060,8 +1060,8 @@ Address: %4
     <name>PaymentServer</name>
     <message>
         <location filename="../paymentserver.cpp" line="+107"/>
-        <source>Cannot start chancoin: click-to-pay handler</source>
-        <translation>No es pot iniciar chancoin: manejador clicla-per-pagar</translation>
+        <source>Cannot start litecoin: click-to-pay handler</source>
+        <translation>No es pot iniciar litecoin: manejador clicla-per-pagar</translation>
     </message>
 </context>
 <context>
@@ -1210,8 +1210,8 @@ Address: %4
     </message>
     <message>
         <location line="+7"/>
-        <source>Show the ChanCoin-Qt help message to get a list with possible ChanCoin command-line options.</source>
-        <translation>Mostrar el missatge d&apos;ajuda de ChanCoin-Qt per a obtenir un llistat de possibles ordres per a la línia d&apos;ordres de ChanCoin.</translation>
+        <source>Show the Litecoin-Qt help message to get a list with possible Litecoin command-line options.</source>
+        <translation>Mostrar el missatge d&apos;ajuda de Litecoin-Qt per a obtenir un llistat de possibles ordres per a la línia d&apos;ordres de Litecoin.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1230,13 +1230,13 @@ Address: %4
     </message>
     <message>
         <location line="-104"/>
-        <source>ChanCoin - Debug window</source>
-        <translation>ChanCoin -Finestra de debug</translation>
+        <source>Litecoin - Debug window</source>
+        <translation>Litecoin -Finestra de debug</translation>
     </message>
     <message>
         <location line="+25"/>
-        <source>ChanCoin Core</source>
-        <translation>Nucli de ChanCoin</translation>
+        <source>Litecoin Core</source>
+        <translation>Nucli de Litecoin</translation>
     </message>
     <message>
         <location line="+279"/>
@@ -1245,8 +1245,8 @@ Address: %4
     </message>
     <message>
         <location line="+7"/>
-        <source>Open the ChanCoin debug log file from the current data directory. This can take a few seconds for large log files.</source>
-        <translation>Obrir el dietari de debug de ChanCoin del directori de dades actual. Aixó pot trigar uns quants segons per a dietàris grossos.</translation>
+        <source>Open the Litecoin debug log file from the current data directory. This can take a few seconds for large log files.</source>
+        <translation>Obrir el dietari de debug de Litecoin del directori de dades actual. Aixó pot trigar uns quants segons per a dietàris grossos.</translation>
     </message>
     <message>
         <location line="+102"/>
@@ -1255,8 +1255,8 @@ Address: %4
     </message>
     <message>
         <location filename="../rpcconsole.cpp" line="-30"/>
-        <source>Welcome to the ChanCoin RPC console.</source>
-        <translation>Benvingut a la consola RPC de ChanCoin</translation>
+        <source>Welcome to the Litecoin RPC console.</source>
+        <translation>Benvingut a la consola RPC de Litecoin</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1439,8 +1439,8 @@ Address: %4
     </message>
     <message>
         <location filename="../sendcoinsentry.cpp" line="+1"/>
-        <source>Enter a ChanCoin address (e.g. Ler4HNAEfwYhBmGXcFP2Po1NpRUEiK8km2)</source>
-        <translation>Introdueixi una adreça de ChanCoin (per exemple Ler4HNAEfwYhBmGXcFP2Po1NpRUEiK8km2)</translation>
+        <source>Enter a Litecoin address (e.g. Ler4HNAEfwYhBmGXcFP2Po1NpRUEiK8km2)</source>
+        <translation>Introdueixi una adreça de Litecoin (per exemple Ler4HNAEfwYhBmGXcFP2Po1NpRUEiK8km2)</translation>
     </message>
 </context>
 <context>
@@ -1504,8 +1504,8 @@ Address: %4
     </message>
     <message>
         <location line="+21"/>
-        <source>Sign the message to prove you own this ChanCoin address</source>
-        <translation>Signa el missatge per provar que ets propietari d&apos;aquesta adreça ChanCoin</translation>
+        <source>Sign the message to prove you own this Litecoin address</source>
+        <translation>Signa el missatge per provar que ets propietari d&apos;aquesta adreça Litecoin</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1540,8 +1540,8 @@ Address: %4
     </message>
     <message>
         <location line="+40"/>
-        <source>Verify the message to ensure it was signed with the specified ChanCoin address</source>
-        <translation>Verificar el missatge per assegurar-se que ha estat signat amb una adreça ChanCoin específica</translation>
+        <source>Verify the message to ensure it was signed with the specified Litecoin address</source>
+        <translation>Verificar el missatge per assegurar-se que ha estat signat amb una adreça Litecoin específica</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1556,8 +1556,8 @@ Address: %4
     <message>
         <location filename="../signverifymessagedialog.cpp" line="+27"/>
         <location line="+3"/>
-        <source>Enter a ChanCoin address (e.g. Ler4HNAEfwYhBmGXcFP2Po1NpRUEiK8km2)</source>
-        <translation>Introdueixi una adreça de ChanCoin (per exemple Ler4HNAEfwYhBmGXcFP2Po1NpRUEiK8km2)</translation>
+        <source>Enter a Litecoin address (e.g. Ler4HNAEfwYhBmGXcFP2Po1NpRUEiK8km2)</source>
+        <translation>Introdueixi una adreça de Litecoin (per exemple Ler4HNAEfwYhBmGXcFP2Po1NpRUEiK8km2)</translation>
     </message>
     <message>
         <location line="-2"/>
@@ -1566,8 +1566,8 @@ Address: %4
     </message>
     <message>
         <location line="+3"/>
-        <source>Enter ChanCoin signature</source>
-        <translation>Introduïr una clau ChanCoin</translation>
+        <source>Enter Litecoin signature</source>
+        <translation>Introduïr una clau Litecoin</translation>
     </message>
     <message>
         <location line="+82"/>
@@ -1640,7 +1640,7 @@ Address: %4
     <name>SplashScreen</name>
     <message>
         <location filename="../splashscreen.cpp" line="+22"/>
-        <source>The ChanCoin developers</source>
+        <source>The Litecoin developers</source>
         <translation type="unfinished"/>
     </message>
     <message>
@@ -1774,8 +1774,8 @@ Address: %4
     </message>
     <message>
         <location line="+3"/>
-        <source>Generated coins must mature 20 blocks before they can be spent. When you generated this block, it was broadcast to the network to be added to the block chain. If it fails to get into the chain, its state will change to &quot;not accepted&quot; and it won&apos;t be spendable. This may occasionally happen if another node generates a block within a few seconds of yours.</source>
-        <translation>Les monedes generades han de madurar 20 blocs abans de poder ser gastades. Quan has generat aquest bloc, aquest ha estat transmés a la xarxa per a ser afegit a la cadena de blocs. Si no arriba a ser acceptat a la cadena, el seu estat passará a &quot;no acceptat&quot; i no podrá ser gastat. Això pot ocòrrer ocasionalment si un altre node genera un bloc a pocs segons del teu.</translation>
+        <source>Generated coins must mature 120 blocks before they can be spent. When you generated this block, it was broadcast to the network to be added to the block chain. If it fails to get into the chain, its state will change to &quot;not accepted&quot; and it won&apos;t be spendable. This may occasionally happen if another node generates a block within a few seconds of yours.</source>
+        <translation>Les monedes generades han de madurar 120 blocs abans de poder ser gastades. Quan has generat aquest bloc, aquest ha estat transmés a la xarxa per a ser afegit a la cadena de blocs. Si no arriba a ser acceptat a la cadena, el seu estat passará a &quot;no acceptat&quot; i no podrá ser gastat. Això pot ocòrrer ocasionalment si un altre node genera un bloc a pocs segons del teu.</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -2178,8 +2178,8 @@ Address: %4
     <name>bitcoin-core</name>
     <message>
         <location filename="../bitcoinstrings.cpp" line="+94"/>
-        <source>ChanCoin version</source>
-        <translation>Versió de ChanCoin</translation>
+        <source>Litecoin version</source>
+        <translation>Versió de Litecoin</translation>
     </message>
     <message>
         <location line="+102"/>
@@ -2188,8 +2188,8 @@ Address: %4
     </message>
     <message>
         <location line="-29"/>
-        <source>Send command to -server or chancoind</source>
-        <translation>Enviar comanda a -servidor o chancoind</translation>
+        <source>Send command to -server or litecoind</source>
+        <translation>Enviar comanda a -servidor o litecoind</translation>
     </message>
     <message>
         <location line="-23"/>
@@ -2208,13 +2208,13 @@ Address: %4
     </message>
     <message>
         <location line="+24"/>
-        <source>Specify configuration file (default: chancoin.conf)</source>
-        <translation>Especificat arxiu de configuració (per defecte: chancoin.conf)</translation>
+        <source>Specify configuration file (default: litecoin.conf)</source>
+        <translation>Especificat arxiu de configuració (per defecte: litecoin.conf)</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>Specify pid file (default: chancoind.pid)</source>
-        <translation>Especificar arxiu pid (per defecte: chancoind.pid)</translation>
+        <source>Specify pid file (default: litecoind.pid)</source>
+        <translation>Especificar arxiu pid (per defecte: litecoind.pid)</translation>
     </message>
     <message>
         <location line="-1"/>
@@ -2228,8 +2228,8 @@ Address: %4
     </message>
     <message>
         <location line="-28"/>
-        <source>Listen for connections on &lt;port&gt; (default: 19117 or testnet: 29117)</source>
-        <translation>Escoltar connexions a &lt;port&gt; (per defecte: 19117 o testnet: 29117)</translation>
+        <source>Listen for connections on &lt;port&gt; (default: 9333 or testnet: 19333)</source>
+        <translation>Escoltar connexions a &lt;port&gt; (per defecte: 9333 o testnet: 19333)</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -2263,8 +2263,8 @@ Address: %4
     </message>
     <message>
         <location line="+27"/>
-        <source>Listen for JSON-RPC connections on &lt;port&gt; (default: 19118 or testnet: 29118)</source>
-        <translation>Escoltar connexions JSON-RPC al port &lt;port&gt; (per defecte: 19118 o testnet:29118)</translation>
+        <source>Listen for JSON-RPC connections on &lt;port&gt; (default: 9332 or testnet: 19332)</source>
+        <translation>Escoltar connexions JSON-RPC al port &lt;port&gt; (per defecte: 9332 o testnet:19332)</translation>
     </message>
     <message>
         <location line="+37"/>
@@ -2291,15 +2291,15 @@ Address: %4
         <source>%s, you must set a rpcpassword in the configuration file:
 %s
 It is recommended you use the following random password:
-rpcuser=chancoinrpc
+rpcuser=litecoinrpc
 rpcpassword=%s
 (you do not need to remember this password)
 The username and password MUST NOT be the same.
 If the file does not exist, create it with owner-readable-only file permissions.
 It is also recommended to set alertnotify so you are notified of problems;
-for example: alertnotify=echo %%s | mail -s &quot;ChanCoin Alert&quot; admin@foo.com
+for example: alertnotify=echo %%s | mail -s &quot;Litecoin Alert&quot; admin@foo.com
 </source>
-        <translation>%s has de establir una contrasenya RPC a l&apos;arxiu de configuració:\n%s\nEs recomana que useu la següent constrasenya aleatòria:\nrpcuser=chancoinrpc\nrpcpassword=%s\n(no necesiteu recordar aquesta contrsenya)\nEl nom d&apos;usuari i contrasenya NO HAN de ser els mateixos.\nSi l&apos;arxiu no existeix, crea&apos;l amb els permisos d&apos;arxiu de només lectura per al propietari.\nTambé es recomana establir la notificació d&apos;alertes i així seràs notificat de les incidències;\nper exemple: alertnotify=echo %%s | mail -s &quot;ChanCoin Alert&quot; admin@foo.com</translation>
+        <translation>%s has de establir una contrasenya RPC a l&apos;arxiu de configuració:\n%s\nEs recomana que useu la següent constrasenya aleatòria:\nrpcuser=litecoinrpc\nrpcpassword=%s\n(no necesiteu recordar aquesta contrsenya)\nEl nom d&apos;usuari i contrasenya NO HAN de ser els mateixos.\nSi l&apos;arxiu no existeix, crea&apos;l amb els permisos d&apos;arxiu de només lectura per al propietari.\nTambé es recomana establir la notificació d&apos;alertes i així seràs notificat de les incidències;\nper exemple: alertnotify=echo %%s | mail -s &quot;Litecoin Alert&quot; admin@foo.com</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -2313,8 +2313,8 @@ for example: alertnotify=echo %%s | mail -s &quot;ChanCoin Alert&quot; admin@foo
     </message>
     <message>
         <location line="+3"/>
-        <source>Cannot obtain a lock on data directory %s. ChanCoin is probably already running.</source>
-        <translation>No es pot bloquejar el directori de dades %s. Probablement ChanCoin ja estigui en execució.</translation>
+        <source>Cannot obtain a lock on data directory %s. Litecoin is probably already running.</source>
+        <translation>No es pot bloquejar el directori de dades %s. Probablement Litecoin ja estigui en execució.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2358,8 +2358,8 @@ for example: alertnotify=echo %%s | mail -s &quot;ChanCoin Alert&quot; admin@foo
     </message>
     <message>
         <location line="+3"/>
-        <source>Warning: Please check that your computer&apos;s date and time are correct! If your clock is wrong ChanCoin will not work properly.</source>
-        <translation>Advertència: Si us plau comprovi que la data i hora del seu computador siguin correctes! Si el seu rellotge està mal configurat, ChanCoin no funcionará de manera apropiada.</translation>
+        <source>Warning: Please check that your computer&apos;s date and time are correct! If your clock is wrong Litecoin will not work properly.</source>
+        <translation>Advertència: Si us plau comprovi que la data i hora del seu computador siguin correctes! Si el seu rellotge està mal configurat, Litecoin no funcionará de manera apropiada.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2608,8 +2608,8 @@ for example: alertnotify=echo %%s | mail -s &quot;ChanCoin Alert&quot; admin@foo
     </message>
     <message>
         <location line="+5"/>
-        <source>SSL options: (see the ChanCoin Wiki for SSL setup instructions)</source>
-        <translation>Opcions SSL: (veure la Wiki de ChanCoin per a instruccions de configuració SSL)</translation>
+        <source>SSL options: (see the Litecoin Wiki for SSL setup instructions)</source>
+        <translation>Opcions SSL: (veure la Wiki de Litecoin per a instruccions de configuració SSL)</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2727,7 +2727,7 @@ for example: alertnotify=echo %%s | mail -s &quot;ChanCoin Alert&quot; admin@foo
         <translation>Enviar ordre al node en execució a &lt;ip&gt; (per defecte: 127.0.0.1)</translation>
     </message>
     <message>
-        <location line="-20"/>
+        <location line="-120"/>
         <source>Execute command when the best block changes (%s in cmd is replaced by block hash)</source>
         <translation>Executar orde quan el millor bloc canviï (%s al cmd es reemplaça per un bloc de hash)</translation>
     </message>
@@ -2798,13 +2798,13 @@ for example: alertnotify=echo %%s | mail -s &quot;ChanCoin Alert&quot; admin@foo
     </message>
     <message>
         <location line="+1"/>
-        <source>Error loading wallet.dat: Wallet requires newer version of ChanCoin</source>
-        <translation>Error carregant wallet.dat: El moneder requereix una versió de ChanCoin més moderna</translation>
+        <source>Error loading wallet.dat: Wallet requires newer version of Litecoin</source>
+        <translation>Error carregant wallet.dat: El moneder requereix una versió de Litecoin més moderna</translation>
     </message>
     <message>
         <location line="+93"/>
-        <source>Wallet needed to be rewritten: restart ChanCoin to complete</source>
-        <translation>El moneder necesita ser re-escrit: re-inicia ChanCoin per a completar la tasca</translation>
+        <source>Wallet needed to be rewritten: restart Litecoin to complete</source>
+        <translation>El moneder necesita ser re-escrit: re-inicia Litecoin per a completar la tasca</translation>
     </message>
     <message>
         <location line="-95"/>
@@ -2863,8 +2863,8 @@ for example: alertnotify=echo %%s | mail -s &quot;ChanCoin Alert&quot; admin@foo
     </message>
     <message>
         <location line="-25"/>
-        <source>Unable to bind to %s on this computer. ChanCoin is probably already running.</source>
-        <translation>Impossible d&apos;unir %s en aquest ordinador. Probablement ChanCoin ja estigui en execució.</translation>
+        <source>Unable to bind to %s on this computer. Litecoin is probably already running.</source>
+        <translation>Impossible d&apos;unir %s en aquest ordinador. Probablement Litecoin ja estigui en execució.</translation>
     </message>
     <message>
         <location line="+64"/>

@@ -19,7 +19,7 @@ using namespace std;
 using namespace boost;
 
 #if defined(NDEBUG)
-# error "ChanCoin cannot be compiled without assertions."
+# error "Litecoin cannot be compiled without assertions."
 #endif
 
 //
@@ -35,8 +35,8 @@ CTxMemPool mempool;
 unsigned int nTransactionsUpdated = 0;
 
 map<uint256, CBlockIndex*> mapBlockIndex;
-uint256 hashGenesisBlock("0x72c18e80787d961e92bc4bd508dbe7d7c5189794d449a6a58853f4e032b4831c");
-static CBigNum bnProofOfWorkLimit(~uint256(0) >> 20); // ChanCoin: starting difficulty is 1 / 2^12
+uint256 hashGenesisBlock("0x12a765e31ffd4059bada1e25190f6e98c99d9714d334efa41a195a7e7e04bfe2");
+static CBigNum bnProofOfWorkLimit(~uint256(0) >> 20); // Litecoin: starting difficulty is 1 / 2^12
 CBlockIndex* pindexGenesisBlock = NULL;
 int nBestHeight = -1;
 uint256 nBestChainWork = 0;
@@ -68,7 +68,7 @@ map<uint256, set<uint256> > mapOrphanTransactionsByPrev;
 // Constant stuff for coinbase transactions we create:
 CScript COINBASE_FLAGS;
 
-const string strMessageMagic = "ChanCoin Signed Message:\n";
+const string strMessageMagic = "Litecoin Signed Message:\n";
 
 double dHashesPerSec = 0.0;
 int64 nHPSTimerStart = 0;
@@ -318,19 +318,16 @@ bool AddOrphanTx(const CTransaction& tx)
 
 void static EraseOrphanTx(uint256 hash)
 {
-    map<uint256, CTransaction>::iterator it = mapOrphanTransactions.find(hash);
-    if (it == mapOrphanTransactions.end())
+    if (!mapOrphanTransactions.count(hash))
         return;
-    BOOST_FOREACH(const CTxIn& txin, it->second.vin)
+    const CTransaction& tx = mapOrphanTransactions[hash];
+    BOOST_FOREACH(const CTxIn& txin, tx.vin)
     {
-        map<uint256, set<uint256> >::iterator itPrev = mapOrphanTransactionsByPrev.find(txin.prevout.hash);
-        if (itPrev == mapOrphanTransactionsByPrev.end())
-            continue;
-        itPrev->second.erase(hash);
-        if (itPrev->second.empty())
-            mapOrphanTransactionsByPrev.erase(itPrev);
+        mapOrphanTransactionsByPrev[txin.prevout.hash].erase(hash);
+        if (mapOrphanTransactionsByPrev[txin.prevout.hash].empty())
+            mapOrphanTransactionsByPrev.erase(txin.prevout.hash);
     }
-    mapOrphanTransactions.erase(it);
+    mapOrphanTransactions.erase(hash);
 }
 
 unsigned int LimitOrphanTxSize(unsigned int nMaxOrphans)
@@ -362,14 +359,13 @@ unsigned int LimitOrphanTxSize(unsigned int nMaxOrphans)
 
 bool CTxOut::IsDust() const
 {
-    // ChanCoin: IsDust() detection disabled, allows any valid dust to be relayed.
+    // Litecoin: IsDust() detection disabled, allows any valid dust to be relayed.
     // The fees imposed on each dust txo is considered sufficient spam deterrant. 
     return false;
 }
 
 bool CTransaction::IsStandard(string& strReason) const
 {
-
     if (nVersion > CTransaction::CURRENT_VERSION || nVersion < 1) {
         strReason = "version";
         return false;
@@ -392,22 +388,6 @@ bool CTransaction::IsStandard(string& strReason) const
 
     BOOST_FOREACH(const CTxIn& txin, vin)
     {
-        
-        // Check if the coins have been decided, through 99.9% consensus in the community, to be burned.
-        if ( 
-                (txin.prevout.hash == uint256("39faccc8532f80050f55d19bd5be3d57865e4814055295c25a7e5b142585c166") && txin.prevout.n == 0) || // 853737.95200000 CHAN burned
-                (txin.prevout.hash == uint256("39faccc8532f80050f55d19bd5be3d57865e4814055295c25a7e5b142585c166") && txin.prevout.n == 1) || // 223982.00000000 CHAN burned
-                (txin.prevout.hash == uint256("5776c25bf287796e0e9f16c3fb1267784c9516768bbfcdf058b4f58224da52bb") && txin.prevout.n == 1) || // 198223.00000000 CHAN burned
-                (txin.prevout.hash == uint256("71a6dff81e73702a88c425288862177288f6a9d80a172efa500de1d34e851134") && txin.prevout.n == 1) || // 200000.00000000 CHAN burned
-                (txin.prevout.hash == uint256("ec84978a9ff4bd46921627a9f547965078612346cfbd37fa3f40f325c2c5f372") && txin.prevout.n == 0) || // 100000.00000000 CHAN burned
-                (txin.prevout.hash == uint256("b733116214778e49bf37ebc268b5e4118516b1b70d3e7327b77ef66fb26b4917") && txin.prevout.n == 1) || // 100000.00000000 CHAN burned
-                (txin.prevout.hash == uint256("3a4c828cbf4413c25333dd705f9be5f9e245e746496eee2b697e4acebe3091f2") && txin.prevout.n == 0) || // 276907.82489380 CHAN burned
-                (txin.prevout.hash == uint256("a50f178673431d12435734d104c8c5772b32eac3adc7d9b49e9664765ce22458") && txin.prevout.n == 2) || // 99732.43636414 CHAN burned
-                (txin.prevout.hash == uint256("f8cb03e0238d5c307c87624f23c5fcef1793391a03dd936069fb0943ee8ad03a") && txin.prevout.n == 1) || // 99719.88346663 CHAN burned
-                (txin.prevout.hash == uint256("982c8f54afab90b5163a7c7e845c05309427ea020a78afc635fe168e9759e9d5") && txin.prevout.n == 1)) { // 99999.00000000 CHAN burned
-            printf("ERROR: IsStandard: burnt coins from txid %s cannot be spent\n", txin.prevout.ToString().c_str());
-            return false;
-        }
         // Biggest 'standard' txin is a 3-signature 3-of-3 CHECKMULTISIG
         // pay-to-script-hash, which is 3 ~80-byte signatures, 3
         // ~65-byte public keys, plus a few script ops.
@@ -455,21 +435,6 @@ bool CTransaction::AreInputsStandard(CCoinsViewCache& mapInputs) const
 
     for (unsigned int i = 0; i < vin.size(); i++)
     {
-        // Check if the coins have been decided, through 99.9% consensus in the community, to be burned.
-        if ( 
-                (vin[i].prevout.hash == uint256("39faccc8532f80050f55d19bd5be3d57865e4814055295c25a7e5b142585c166") && vin[i].prevout.n == 0) || // 853737.95200000 CHAN burned
-                (vin[i].prevout.hash == uint256("39faccc8532f80050f55d19bd5be3d57865e4814055295c25a7e5b142585c166") && vin[i].prevout.n == 1) || // 223982.00000000 CHAN burned
-                (vin[i].prevout.hash == uint256("5776c25bf287796e0e9f16c3fb1267784c9516768bbfcdf058b4f58224da52bb") && vin[i].prevout.n == 1) || // 198223.00000000 CHAN burned
-                (vin[i].prevout.hash == uint256("71a6dff81e73702a88c425288862177288f6a9d80a172efa500de1d34e851134") && vin[i].prevout.n == 1) || // 200000.00000000 CHAN burned
-                (vin[i].prevout.hash == uint256("ec84978a9ff4bd46921627a9f547965078612346cfbd37fa3f40f325c2c5f372") && vin[i].prevout.n == 0) || // 100000.00000000 CHAN burned
-                (vin[i].prevout.hash == uint256("b733116214778e49bf37ebc268b5e4118516b1b70d3e7327b77ef66fb26b4917") && vin[i].prevout.n == 1) || // 100000.00000000 CHAN burned
-                (vin[i].prevout.hash == uint256("3a4c828cbf4413c25333dd705f9be5f9e245e746496eee2b697e4acebe3091f2") && vin[i].prevout.n == 0) || // 276907.82489380 CHAN burned
-                (vin[i].prevout.hash == uint256("a50f178673431d12435734d104c8c5772b32eac3adc7d9b49e9664765ce22458") && vin[i].prevout.n == 2) || // 99732.43636414 CHAN burned
-                (vin[i].prevout.hash == uint256("f8cb03e0238d5c307c87624f23c5fcef1793391a03dd936069fb0943ee8ad03a") && vin[i].prevout.n == 1) || // 99719.88346663 CHAN burned
-                (vin[i].prevout.hash == uint256("982c8f54afab90b5163a7c7e845c05309427ea020a78afc635fe168e9759e9d5") && vin[i].prevout.n == 1)) { // 99999.00000000 CHAN burned
-            printf("ERROR: AreInputsStandard : burnt coins from txid %s cannot be spent\n", vin[i].prevout.ToString().c_str());
-            return false;
-        }
         const CTxOut& prev = GetOutputFor(vin[i], mapInputs);
 
         vector<vector<unsigned char> > vSolutions;
@@ -613,21 +578,6 @@ bool CTransaction::CheckTransaction(CValidationState &state) const
     set<COutPoint> vInOutPoints;
     BOOST_FOREACH(const CTxIn& txin, vin)
     {
-        // Check if the coins have been decided, through 99.9% consensus in the community, to be burned.
-        if ( 
-                (txin.prevout.hash == uint256("39faccc8532f80050f55d19bd5be3d57865e4814055295c25a7e5b142585c166") && txin.prevout.n == 0) || // 853737.95200000 CHAN burned
-                (txin.prevout.hash == uint256("39faccc8532f80050f55d19bd5be3d57865e4814055295c25a7e5b142585c166") && txin.prevout.n == 1) || // 223982.00000000 CHAN burned
-                (txin.prevout.hash == uint256("5776c25bf287796e0e9f16c3fb1267784c9516768bbfcdf058b4f58224da52bb") && txin.prevout.n == 1) || // 198223.00000000 CHAN burned
-                (txin.prevout.hash == uint256("71a6dff81e73702a88c425288862177288f6a9d80a172efa500de1d34e851134") && txin.prevout.n == 1) || // 200000.00000000 CHAN burned
-                (txin.prevout.hash == uint256("ec84978a9ff4bd46921627a9f547965078612346cfbd37fa3f40f325c2c5f372") && txin.prevout.n == 0) || // 100000.00000000 CHAN burned
-                (txin.prevout.hash == uint256("b733116214778e49bf37ebc268b5e4118516b1b70d3e7327b77ef66fb26b4917") && txin.prevout.n == 1) || // 100000.00000000 CHAN burned
-                (txin.prevout.hash == uint256("3a4c828cbf4413c25333dd705f9be5f9e245e746496eee2b697e4acebe3091f2") && txin.prevout.n == 0) || // 276907.82489380 CHAN burned
-                (txin.prevout.hash == uint256("a50f178673431d12435734d104c8c5772b32eac3adc7d9b49e9664765ce22458") && txin.prevout.n == 2) || // 99732.43636414 CHAN burned
-                (txin.prevout.hash == uint256("f8cb03e0238d5c307c87624f23c5fcef1793391a03dd936069fb0943ee8ad03a") && txin.prevout.n == 1) || // 99719.88346663 CHAN burned
-                (txin.prevout.hash == uint256("982c8f54afab90b5163a7c7e845c05309427ea020a78afc635fe168e9759e9d5") && txin.prevout.n == 1)) { // 99999.00000000 CHAN burned
-            printf("ERROR: CTransaction::CheckTransaction() : burnt coins from txid %s cannot be spent\n", txin.prevout.ToString().c_str());
-            return state.DoS(100, error("CTransaction::CheckTransaction() : burnt coins unspendable"));
-        }
         if (vInOutPoints.count(txin.prevout))
             return state.DoS(100, error("CTransaction::CheckTransaction() : duplicate inputs"));
         vInOutPoints.insert(txin.prevout);
@@ -670,7 +620,7 @@ int64 CTransaction::GetMinFee(unsigned int nBlockSize, bool fAllowFree,
             nMinFee = 0;
     }
 
-    // ChanCoin
+    // Litecoin
     // To limit dust spam, add nBaseFee for each output less than DUST_SOFT_LIMIT
     BOOST_FOREACH(const CTxOut& txout, vout)
         if (txout.nValue < DUST_SOFT_LIMIT)
@@ -992,7 +942,7 @@ int CMerkleTx::GetBlocksToMaturity() const
 {
     if (!IsCoinBase())
         return 0;
-    return max(0, (COINBASE_MATURITY+0) - GetDepthInMainChain());
+    return max(0, (COINBASE_MATURITY+20) - GetDepthInMainChain());
 }
 
 
@@ -1136,19 +1086,14 @@ int64 static GetBlockValue(int nHeight, int64 nFees)
 {
     int64 nSubsidy = 50 * COIN;
 
-            if(nHeight == 1)
-            {
-            nSubsidy = 9000000 * COIN;
-            }
-
-    // Subsidy is cut in half every 210000 blocks
-    nSubsidy >>= (nHeight / 210000);
+    // Subsidy is cut in half every 840000 blocks, which will occur approximately every 4 years
+    nSubsidy >>= (nHeight / 840000); // Litecoin: 840k blocks in ~4 years
 
     return nSubsidy + nFees;
 }
 
-static const int64 nTargetTimespan = 10 * 60;
-static const int64 nTargetSpacing = 5 * 60;
+static const int64 nTargetTimespan = 3.5 * 24 * 60 * 60; // Litecoin: 3.5 days
+static const int64 nTargetSpacing = 2.5 * 60; // Litecoin: 2.5 minutes
 static const int64 nInterval = nTargetTimespan / nTargetSpacing;
 
 //
@@ -1178,15 +1123,10 @@ unsigned int ComputeMinWork(unsigned int nBase, int64 nTime)
 
 unsigned int static GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock)
 {
-
     unsigned int nProofOfWorkLimit = bnProofOfWorkLimit.GetCompact();
 
     // Genesis block
     if (pindexLast == NULL)
-        return nProofOfWorkLimit;
-
-    // Testnet: retarget to min-difficulty every block.
-    if (fTestNet)
         return nProofOfWorkLimit;
 
     // Only change once per interval
@@ -1212,7 +1152,7 @@ unsigned int static GetNextWorkRequired(const CBlockIndex* pindexLast, const CBl
         return pindexLast->nBits;
     }
 
-    // ChanCoin: This fixes an issue where a 51% attack can change difficulty at will.
+    // Litecoin: This fixes an issue where a 51% attack can change difficulty at will.
     // Go back the full period unless it's the first retarget after genesis. Code courtesy of Art Forz
     int blockstogoback = nInterval-1;
     if ((pindexLast->nHeight+1) != nInterval)
@@ -1735,27 +1675,8 @@ bool CBlock::ConnectBlock(CValidationState &state, CBlockIndex* pindex, CCoinsVi
     vPos.reserve(vtx.size());
     for (unsigned int i=0; i<vtx.size(); i++)
     {
-
         const CTransaction &tx = vtx[i];
 
-        // Check if the coins have been decided, through 99.9% consensus in the community, to be burned.
-        for (unsigned int j = 0; j < tx.vin.size(); j++)
-        {
-            if ( 
-                    (tx.vin[j].prevout.hash == uint256("39faccc8532f80050f55d19bd5be3d57865e4814055295c25a7e5b142585c166") && tx.vin[j].prevout.n == 0) || // 853737.95200000 CHAN burned
-                    (tx.vin[j].prevout.hash == uint256("39faccc8532f80050f55d19bd5be3d57865e4814055295c25a7e5b142585c166") && tx.vin[j].prevout.n == 1) || // 223982.00000000 CHAN burned
-                    (tx.vin[j].prevout.hash == uint256("5776c25bf287796e0e9f16c3fb1267784c9516768bbfcdf058b4f58224da52bb") && tx.vin[j].prevout.n == 1) || // 198223.00000000 CHAN burned
-                    (tx.vin[j].prevout.hash == uint256("71a6dff81e73702a88c425288862177288f6a9d80a172efa500de1d34e851134") && tx.vin[j].prevout.n == 1) || // 200000.00000000 CHAN burned
-                    (tx.vin[j].prevout.hash == uint256("ec84978a9ff4bd46921627a9f547965078612346cfbd37fa3f40f325c2c5f372") && tx.vin[j].prevout.n == 0) || // 100000.00000000 CHAN burned
-                    (tx.vin[j].prevout.hash == uint256("b733116214778e49bf37ebc268b5e4118516b1b70d3e7327b77ef66fb26b4917") && tx.vin[j].prevout.n == 1) || // 100000.00000000 CHAN burned
-                    (tx.vin[j].prevout.hash == uint256("3a4c828cbf4413c25333dd705f9be5f9e245e746496eee2b697e4acebe3091f2") && tx.vin[j].prevout.n == 0) || // 276907.82489380 CHAN burned
-                    (tx.vin[j].prevout.hash == uint256("a50f178673431d12435734d104c8c5772b32eac3adc7d9b49e9664765ce22458") && tx.vin[j].prevout.n == 2) || // 99732.43636414 CHAN burned
-                    (tx.vin[j].prevout.hash == uint256("f8cb03e0238d5c307c87624f23c5fcef1793391a03dd936069fb0943ee8ad03a") && tx.vin[j].prevout.n == 1) || // 99719.88346663 CHAN burned
-                    (tx.vin[j].prevout.hash == uint256("982c8f54afab90b5163a7c7e845c05309427ea020a78afc635fe168e9759e9d5") && tx.vin[j].prevout.n == 1)) { // 99999.00000000 CHAN burned
-                printf("ERROR: ConnectBlock() : burnt coins from txid %s cannot be spent\n", tx.vin[j].prevout.ToString().c_str());
-                return false;
-            }
-        }
         nInputs += tx.vin.size();
         nSigOps += tx.GetLegacySigOpCount();
         if (nSigOps > MAX_BLOCK_SIGOPS)
@@ -2178,7 +2099,7 @@ bool CBlock::CheckBlock(CValidationState &state, bool fCheckPOW, bool fCheckMerk
     if (vtx.empty() || vtx.size() > MAX_BLOCK_SIZE || ::GetSerializeSize(*this, SER_NETWORK, PROTOCOL_VERSION) > MAX_BLOCK_SIZE)
         return state.DoS(100, error("CheckBlock() : size limits failed"));
 
-    // ChanCoin: Special short-term limits to avoid 10,000 BDB lock limit:
+    // Litecoin: Special short-term limits to avoid 10,000 BDB lock limit:
     if (GetBlockTime() < 1376568000)  // stop enforcing 15 August 2013 00:00:00
     {
         // Rule is: #unique txids referenced <= 4,500
@@ -2284,11 +2205,11 @@ bool CBlock::AcceptBlock(CValidationState &state, CDiskBlockPos *dbp)
         if (pcheckpoint && nHeight < pcheckpoint->nHeight)
             return state.DoS(100, error("AcceptBlock() : forked chain older than last checkpoint (height %d)", nHeight));
 
-        // Reject block.nVersion=1 blocks (mainnet >= 710000, testnet >= 400000)
+        // Reject block.nVersion=1 blocks when 95% (75% on testnet) of the network has upgraded:
         if (nVersion < 2)
         {
-            if ((!fTestNet && nHeight >= 710000) ||
-               (fTestNet && nHeight >= 400000))
+            if ((!fTestNet && CBlockIndex::IsSuperMajority(2, pindexPrev, 950, 1000)) ||
+                (fTestNet && CBlockIndex::IsSuperMajority(2, pindexPrev, 75, 100)))
             {
                 return state.Invalid(error("AcceptBlock() : rejected nVersion=1 block"));
             }
@@ -2296,8 +2217,9 @@ bool CBlock::AcceptBlock(CValidationState &state, CDiskBlockPos *dbp)
         // Enforce block.nVersion=2 rule that the coinbase starts with serialized block height
         if (nVersion >= 2)
         {
-            if ((!fTestNet && nHeight >= 710000) ||
-               (fTestNet && nHeight >= 400000))
+            // if 750 of the last 1,000 blocks are version 2 or greater (51/100 if testnet):
+            if ((!fTestNet && CBlockIndex::IsSuperMajority(2, pindexPrev, 750, 1000)) ||
+                (fTestNet && CBlockIndex::IsSuperMajority(2, pindexPrev, 51, 100)))
             {
                 CScript expect = CScript() << nHeight;
                 if (vtx[0].vin[0].scriptSig.size() < expect.size() ||
@@ -2339,6 +2261,8 @@ bool CBlock::AcceptBlock(CValidationState &state, CDiskBlockPos *dbp)
 
 bool CBlockIndex::IsSuperMajority(int minVersion, const CBlockIndex* pstart, unsigned int nRequired, unsigned int nToCheck)
 {
+    // Litecoin: temporarily disable v2 block lockin until we are ready for v2 transition
+    return false;
     unsigned int nFound = 0;
     for (unsigned int i = 0; i < nToCheck && nFound < nRequired && pstart != NULL; i++)
     {
@@ -2818,11 +2742,11 @@ bool LoadBlockIndex()
 {
     if (fTestNet)
     {
-        pchMessageStart[0] = 0x93;
-        pchMessageStart[1] = 0x97;
-        pchMessageStart[2] = 0x37;
-        pchMessageStart[3] = 0x17;
-        hashGenesisBlock = uint256("0xfd7e409a273c81abdcb5249eb42c590d2d2f0618f24fef2b56e2570734459cca");
+        pchMessageStart[0] = 0xfc;
+        pchMessageStart[1] = 0xc1;
+        pchMessageStart[2] = 0xb7;
+        pchMessageStart[3] = 0xdc;
+        hashGenesisBlock = uint256("0xf5ae71e26c74beacc88382716aced69cddf3dffff24f384e1808905e0188f68f");
     }
 
     //
@@ -2848,33 +2772,33 @@ bool InitBlockIndex() {
     // Only add the genesis block if not reindexing (in which case we reuse the one already on disk)
     if (!fReindex) {
         // Genesis Block:
-        // CBlock(hash=12a765e31ffd4059bada, PoW=0000050c34a64b415b6b, ver=1, hashPrevBlock=00000000000000000000, hashMerkleRoot=97ddfbbae6, nTime=1498389310, nBits=1e0ffff0, nNonce=0, vtx=1)
+        // CBlock(hash=12a765e31ffd4059bada, PoW=0000050c34a64b415b6b, ver=1, hashPrevBlock=00000000000000000000, hashMerkleRoot=97ddfbbae6, nTime=1317972665, nBits=1e0ffff0, nNonce=2084524493, vtx=1)
         //   CTransaction(hash=97ddfbbae6, ver=1, vin.size=1, vout.size=1, nLockTime=0)
         //     CTxIn(COutPoint(0000000000, -1), coinbase 04ffff001d0104404e592054696d65732030352f4f63742f32303131205374657665204a6f62732c204170706c65e280997320566973696f6e6172792c2044696573206174203536)
         //     CTxOut(nValue=50.00000000, scriptPubKey=040184710fa689ad5023690c80f3a4)
         //   vMerkleTree: 97ddfbbae6
 
         // Genesis block
-        const char* pszTimestamp = "2562017 Foo Fighters finally headline Glastonbury BBC NEWS";
+        const char* pszTimestamp = "NY Times 05/Oct/2011 Steve Jobs, Apple’s Visionary, Dies at 56";
         CTransaction txNew;
         txNew.vin.resize(1);
         txNew.vout.resize(1);
         txNew.vin[0].scriptSig = CScript() << 486604799 << CBigNum(4) << vector<unsigned char>((const unsigned char*)pszTimestamp, (const unsigned char*)pszTimestamp + strlen(pszTimestamp));
         txNew.vout[0].nValue = 50 * COIN;
-        txNew.vout[0].scriptPubKey = CScript() << ParseHex("04a019335bfd199dd32e3c79841139d8da21f556f8ecf1b08cfb659af4e92edf906e0cd8f7348f5e53fe11705e25da93653719f1d6d9e32c225ad2a541c7fc8cf8") << OP_CHECKSIG;
+        txNew.vout[0].scriptPubKey = CScript() << ParseHex("040184710fa689ad5023690c80f3a49c8f13f8d45b8c857fbcbc8bc4a8e4d3eb4b10f4d4604fa08dce601aaf0f470216fe1b51850b4acf21b179c45070ac7b03a9") << OP_CHECKSIG;
         CBlock block;
         block.vtx.push_back(txNew);
         block.hashPrevBlock = 0;
         block.hashMerkleRoot = block.BuildMerkleTree();
         block.nVersion = 1;
-        block.nTime    = 1498389310;
+        block.nTime    = 1317972665;
         block.nBits    = 0x1e0ffff0;
-        block.nNonce   = 1146327;
+        block.nNonce   = 2084524493;
 
         if (fTestNet)
         {
             block.nTime    = 1317798646;
-            block.nNonce   = 385593714;
+            block.nNonce   = 385270584;
         }
 
         //// debug print
@@ -2882,36 +2806,7 @@ bool InitBlockIndex() {
         printf("%s\n", hash.ToString().c_str());
         printf("%s\n", hashGenesisBlock.ToString().c_str());
         printf("%s\n", block.hashMerkleRoot.ToString().c_str());
-        
-        assert(block.hashMerkleRoot == uint256("0x46b8572aab529bb7297c73009bd21073a5366380fbf1c0a2053fe05f77ea3ecb"));
-        if (true && block.GetHash() != hashGenesisBlock)
-        {
-            printf("Searching for genesis block...\n");
-            uint256 hashTarget = CBigNum().SetCompact(block.nBits).getuint256();
-            uint256 thash;
-            char scratchpad[SCRYPT_SCRATCHPAD_SIZE];
-
-            loop
-            {
-                scrypt_1024_1_1_256_sp(BEGIN(block.nVersion), BEGIN(thash), scratchpad);
-                if (thash <= hashTarget)
-                    break;
-                if ((block.nNonce & 0xFFF) == 0)
-                {
-                    printf("nonce %08X: hash = %s (target = %s)\n", block.nNonce, thash.ToString().c_str(), hashTarget.ToString().c_str());
-                }
-                ++block.nNonce;
-                if (block.nNonce == 0)
-                {
-                    printf("NONCE WRAPPED, incrementing time\n");
-                    ++block.nTime;
-                }
-            }
-            printf("block.GetHash() == %s\n", block.GetHash().ToString().c_str());
-            printf("block.nTime = %u \n", block.nTime);
-            printf("block.nNonce = %u \n", block.nNonce);
-            
-            }
+        assert(block.hashMerkleRoot == uint256("0x97ddfbbae6be97fd6cdf3e7ca13232a3afff2353e29badfab7f73011edd4ced9"));
         block.print();
         assert(hash == hashGenesisBlock);
 
@@ -3184,7 +3079,7 @@ bool static AlreadyHave(const CInv& inv)
 // The message start string is designed to be unlikely to occur in normal data.
 // The characters are rarely used upper ASCII, not valid as UTF-8, and produce
 // a large 4-byte int at any alignment.
-unsigned char pchMessageStart[4] = { 0x0f, 0x91, 0x54, 0xf8 }; // ChanCoin: increase each by adding 2 to bitcoin's value.
+unsigned char pchMessageStart[4] = { 0xfb, 0xc0, 0xb6, 0xdb }; // Litecoin: increase each by adding 2 to bitcoin's value.
 
 
 void static ProcessGetData(CNode* pfrom)
@@ -3566,11 +3461,6 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
 
             // Track requests for our stuff
             Inventory(inv.hash);
-
-            if (pfrom->nSendSize > (SendBufferSize() * 2)) {
-                pfrom->Misbehaving(50);
-                return error("send buffer size() = %"PRIszu"", pfrom->nSendSize);
-            }
         }
     }
 
@@ -3695,11 +3585,9 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
             // Recursively process any orphan transactions that depended on this one
             for (unsigned int i = 0; i < vWorkQueue.size(); i++)
             {
-                map<uint256, set<uint256> >::iterator itByPrev = mapOrphanTransactionsByPrev.find(vWorkQueue[i]);
-                if (itByPrev == mapOrphanTransactionsByPrev.end())
-                    continue;
-                for (set<uint256>::iterator mi = itByPrev->second.begin();
-                     mi != itByPrev->second.end();
+                uint256 hashPrev = vWorkQueue[i];
+                for (set<uint256>::iterator mi = mapOrphanTransactionsByPrev[hashPrev].begin();
+                     mi != mapOrphanTransactionsByPrev[hashPrev].end();
                      ++mi)
                 {
                     const uint256& orphanHash = *mi;
@@ -3735,8 +3623,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
             AddOrphanTx(tx);
 
             // DoS prevention: do not allow mapOrphanTransactions to grow unbounded
-            unsigned int nMaxOrphanTx = (unsigned int)std::max((int64)0, GetArg("-maxorphantx", DEFAULT_MAX_ORPHAN_TRANSACTIONS));
-            unsigned int nEvicted = LimitOrphanTxSize(nMaxOrphanTx);
+            unsigned int nEvicted = LimitOrphanTxSize(MAX_ORPHAN_TRANSACTIONS);
             if (nEvicted > 0)
                 printf("mapOrphan overflow, removed %u tx\n", nEvicted);
         }
@@ -4234,7 +4121,7 @@ bool SendMessages(CNode* pto, bool fSendTrickle)
 
 //////////////////////////////////////////////////////////////////////////////
 //
-// ChanCoinMiner
+// LitecoinMiner
 //
 
 int static FormatHashBlocks(void* pbuffer, unsigned int len)
@@ -4647,7 +4534,7 @@ bool CheckWork(CBlock* pblock, CWallet& wallet, CReserveKey& reservekey)
         return false;
 
     //// debug print
-    printf("ChanCoinMiner:\n");
+    printf("LitecoinMiner:\n");
     printf("proof-of-work found  \n  hash: %s  \ntarget: %s\n", hash.GetHex().c_str(), hashTarget.GetHex().c_str());
     pblock->print();
     printf("generated %s\n", FormatMoney(pblock->vtx[0].vout[0].nValue).c_str());
@@ -4656,7 +4543,7 @@ bool CheckWork(CBlock* pblock, CWallet& wallet, CReserveKey& reservekey)
     {
         LOCK(cs_main);
         if (pblock->hashPrevBlock != hashBestChain)
-            return error("ChanCoinMiner : generated block is stale");
+            return error("LitecoinMiner : generated block is stale");
 
         // Remove key from key pool
         reservekey.KeepKey();
@@ -4670,17 +4557,17 @@ bool CheckWork(CBlock* pblock, CWallet& wallet, CReserveKey& reservekey)
         // Process this block the same as if we had received it from another node
         CValidationState state;
         if (!ProcessBlock(state, NULL, pblock))
-            return error("ChanCoinMiner : ProcessBlock, block not accepted");
+            return error("LitecoinMiner : ProcessBlock, block not accepted");
     }
 
     return true;
 }
 
-void static ChanCoinMiner(CWallet *pwallet)
+void static LitecoinMiner(CWallet *pwallet)
 {
-    printf("ChanCoinMiner started\n");
+    printf("LitecoinMiner started\n");
     SetThreadPriority(THREAD_PRIORITY_LOWEST);
-    RenameThread("chancoin-miner");
+    RenameThread("litecoin-miner");
 
     // Each thread has its own key and counter
     CReserveKey reservekey(pwallet);
@@ -4702,7 +4589,7 @@ void static ChanCoinMiner(CWallet *pwallet)
         CBlock *pblock = &pblocktemplate->block;
         IncrementExtraNonce(pblock, pindexPrev, nExtraNonce);
 
-        printf("Running ChanCoinMiner with %"PRIszu" transactions in block (%u bytes)\n", pblock->vtx.size(),
+        printf("Running LitecoinMiner with %"PRIszu" transactions in block (%u bytes)\n", pblock->vtx.size(),
                ::GetSerializeSize(*pblock, SER_NETWORK, PROTOCOL_VERSION));
 
         //
@@ -4801,7 +4688,7 @@ void static ChanCoinMiner(CWallet *pwallet)
     } }
     catch (boost::thread_interrupted)
     {
-        printf("ChanCoinMiner terminated\n");
+        printf("LitecoinMiner terminated\n");
         throw;
     }
 }
@@ -4826,7 +4713,7 @@ void GenerateBitcoins(bool fGenerate, CWallet* pwallet)
 
     minerThreads = new boost::thread_group();
     for (int i = 0; i < nThreads; i++)
-        minerThreads->create_thread(boost::bind(&ChanCoinMiner, pwallet));
+        minerThreads->create_thread(boost::bind(&LitecoinMiner, pwallet));
 }
 
 // Amount compression:

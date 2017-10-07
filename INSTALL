@@ -1,9 +1,9 @@
-Building ChanCoin
+Building Litecoin
 
-See doc/readme-qt.rst for instructions on building ChanCoin-Qt,
+See doc/readme-qt.rst for instructions on building Litecoin-Qt,
 the intended-for-end-users, nice-graphical-interface, reference
-implementation of ChanCoin.
+implementation of Litecoin.
 
-See doc/build-*.txt for instructions on building chancoind,
+See doc/build-*.txt for instructions on building litecoind,
 the intended-for-services, no-graphical-interface, reference
-implementation of ChanCoin.
+implementation of Litecoin.

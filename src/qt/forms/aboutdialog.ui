@@ -6,42 +6,24 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>674</width>
+    <width>593</width>
     <height>360</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>About ChanCoin</string>
+   <string>About Litecoin</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_2">
-   <item alignment="Qt::AlignTop">
+   <item>
     <widget class="QLabel" name="label_4">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+      <sizepolicy hsizetype="Preferred" vsizetype="Ignored">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="minimumSize">
-      <size>
-       <width>128</width>
-       <height>128</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>128</width>
-       <height>128</height>
-      </size>
-     </property>
      <property name="pixmap">
-      <pixmap resource="../bitcoin.qrc">:/icons/bitcoin</pixmap>
-     </property>
-     <property name="scaledContents">
-      <bool>true</bool>
+      <pixmap resource="../bitcoin.qrc">:/images/about</pixmap>
      </property>
     </widget>
    </item>
@@ -68,7 +50,7 @@
           <cursorShape>IBeamCursor</cursorShape>
          </property>
          <property name="text">
-          <string>&lt;b&gt;ChanCoin&lt;/b&gt; version</string>
+          <string>&lt;b&gt;Litecoin&lt;/b&gt; version</string>
          </property>
          <property name="textInteractionFlags">
           <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
@@ -81,7 +63,7 @@
           <cursorShape>IBeamCursor</cursorShape>
          </property>
          <property name="text">
-          <string notr="true">1.1-andy</string>
+          <string notr="true">0.3.666-beta</string>
          </property>
          <property name="textInteractionFlags">
           <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
@@ -110,7 +92,7 @@
        </property>
        <property name="text">
         <string notr="true">Copyright &amp;copy; 2009-YYYY The Bitcoin developers
-Copyright &amp;copy; 2011-YYYY The ChanCoin developers</string>
+Copyright &amp;copy; 2011-YYYY The Litecoin developers</string>
        </property>
        <property name="textFormat">
         <enum>Qt::RichText</enum>

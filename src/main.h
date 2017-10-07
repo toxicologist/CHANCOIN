@@ -37,8 +37,10 @@ static const unsigned int DEFAULT_BLOCK_PRIORITY_SIZE = 17000;
 static const unsigned int MAX_STANDARD_TX_SIZE = 100000;
 /** The maximum allowed number of signature check operations in a block (network rule) */
 static const unsigned int MAX_BLOCK_SIGOPS = MAX_BLOCK_SIZE/50;
-/** Default for -maxorphantx, maximum number of orphan transactions kept in memory */
-static const unsigned int DEFAULT_MAX_ORPHAN_TRANSACTIONS = 25;
+/** The maximum number of orphan transactions kept in memory */
+static const unsigned int MAX_ORPHAN_TRANSACTIONS = MAX_BLOCK_SIZE/100;
+/** The maximum number of entries in an 'inv' protocol message */
+static const unsigned int MAX_INV_SZ = 50000;
 /** The maximum size of a blk?????.dat file (since 0.8) */
 static const unsigned int MAX_BLOCKFILE_SIZE = 0x8000000; // 128 MiB
 /** The pre-allocation chunk size for blk?????.dat files (since 0.8) */
@@ -52,10 +54,10 @@ static const int64 DUST_SOFT_LIMIT = 100000; // 0.001 LTC
 /** Dust Hard Limit, ignored as wallet inputs (mininput default) */
 static const int64 DUST_HARD_LIMIT = 1000;   // 0.00001 LTC mininput
 /** No amount larger than this (in satoshi) is valid */
-static const int64 MAX_MONEY = 30000000 * COIN;
+static const int64 MAX_MONEY = 84000000 * COIN;
 inline bool MoneyRange(int64 nValue) { return (nValue >= 0 && nValue <= MAX_MONEY); }
 /** Coinbase transaction outputs can only be spent after this number of new blocks (network rule) */
-static const int COINBASE_MATURITY = 20;
+static const int COINBASE_MATURITY = 100;
 /** Threshold for nLockTime: below this value it is interpreted as block number, otherwise as UNIX timestamp. */
 static const unsigned int LOCKTIME_THRESHOLD = 500000000; // Tue Nov  5 00:53:20 1985 UTC
 /** Maximum number of script-checking threads allowed */

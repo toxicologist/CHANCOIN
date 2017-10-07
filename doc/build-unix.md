@@ -12,9 +12,9 @@ To Build
 ---------------------
 
 	cd src/
-	make -f makefile.unix		# Headless chancoin
+	make -f makefile.unix		# Headless litecoin
 
-See readme-qt.rst for instructions on building ChanCoin-Qt, the graphical user interface.
+See readme-qt.rst for instructions on building Litecoin-Qt, the graphical user interface.
 
 Dependencies
 ---------------------
@@ -28,7 +28,7 @@ Dependencies
 
 [miniupnpc](http://miniupnp.free.fr/) may be used for UPnP port mapping.  It can be downloaded from [here](
 http://miniupnp.tuxfamily.org/files/).  UPnP support is compiled in and
-turned off by default.  Set USE\_UPNP to a different value to control this:
+turned off by default.  Set USE_UPNP to a different value to control this:
 
 	USE_UPNP=     No UPnP support miniupnp not required
 	USE_UPNP=0    (the default) UPnP support turned off by default at runtime
@@ -62,14 +62,7 @@ for Ubuntu 12.04:
 
 	sudo apt-get install libboost-all-dev
 
-db4.8 packages are available [here](https://launchpad.net/~bitcoin/+archive/bitcoin).
-
-Install them with add-apt-repository:
-
-    sudo apt-get install software-properties-common
-    sudo add-apt-repository ppa:bitcoin/bitcoin
-    sudo apt-get update
-    sudo apt-get install libdb4.8-dev libdb4.8++-dev
+ db4.8 packages are available [here](https://launchpad.net/~bitcoin/+archive/bitcoin).
 
  Ubuntu precise has packages for libdb5.1-dev and libdb5.1++-dev,
  but using these will break binary wallet compatibility, and is not recommended.
@@ -120,7 +113,7 @@ If you need to build Boost yourself:
 
 Security
 --------
-To help make your chancoin installation more secure by making certain attacks impossible to
+To help make your litecoin installation more secure by making certain attacks impossible to
 exploit even if a vulnerability is found, you can take the following measures:
 
 * Position Independent Executable
@@ -138,7 +131,7 @@ exploit even if a vulnerability is found, you can take the following measures:
 
     To test that you have built PIE executable, install scanelf, part of paxutils, and use:
 
-    	scanelf -e ./chancoin
+    	scanelf -e ./litecoin
 
     The output should contain:
      TYPE
@@ -152,7 +145,7 @@ exploit even if a vulnerability is found, you can take the following measures:
     executable without the non-executable stack protection.
 
     To verify that the stack is non-executable after compiling use:
-    `scanelf -e ./chancoin`
+    `scanelf -e ./litecoin`
 
     the output should contain:
 	STK/REL/PTL

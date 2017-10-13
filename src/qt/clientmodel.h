@@ -7,9 +7,10 @@
 
 #include <QObject>
 
-class OptionsModel;
 class AddressTableModel;
+class OptionsModel;
 class TransactionTableModel;
+
 class CWallet;
 
 QT_BEGIN_NAMESPACE
@@ -39,11 +40,14 @@ public:
     int getNumBlocks() const;
     int getNumBlocksAtStartup();
 
+    quint64 getTotalBytesRecv() const;
+    quint64 getTotalBytesSent() const;
+
     double getVerificationProgress() const;
     QDateTime getLastBlockDate() const;
 
-    //! Return true if client connected to testnet
-    bool isTestNet() const;
+    //! Return network (main, testnet3, regtest)
+    QString getNetworkName() const;
     //! Return true if core is doing initial block download
     bool inInitialBlockDownload() const;
     //! Return true if core is importing blocks
@@ -64,8 +68,8 @@ private:
 
     int cachedNumBlocks;
     int cachedNumBlocksOfPeers;
-	bool cachedReindexing;
-	bool cachedImporting;
+    bool cachedReindexing;
+    bool cachedImporting;
 
     int numBlocksAtStartup;
 
@@ -78,8 +82,9 @@ signals:
     void numConnectionsChanged(int count);
     void numBlocksChanged(int count, int countOfPeers);
     void alertsChanged(const QString &warnings);
+    void bytesChanged(quint64 totalBytesIn, quint64 totalBytesOut);
 
-    //! Asynchronous message notification
+    //! Fired when a message should be reported to the user
     void message(const QString &title, const QString &message, unsigned int style);
 
 public slots:

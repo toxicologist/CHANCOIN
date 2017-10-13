@@ -1,9 +1,10 @@
 // Copyright (c) 2012 The Bitcoin developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
-#include <string>
 
 #include "version.h"
+
+#include <string>
 
 // Name of client reported in the 'version' message. Report the same name
 // for both bitcoind and bitcoin-qt, to make it harder for attackers to
@@ -36,8 +37,8 @@ const std::string CLIENT_NAME("Satoshi");
 // git will put "#define GIT_ARCHIVE 1" on the next line inside archives. 
 #define GIT_ARCHIVE 1
 #ifdef GIT_ARCHIVE
-#    define GIT_COMMIT_ID "fab19073723"
-#    define GIT_COMMIT_DATE "Fri, 13 Jun 2014 11:36:21 -1000"
+#    define GIT_COMMIT_ID "d6e0e171ab2"
+#    define GIT_COMMIT_DATE "Sat, 1 Mar 2014 09:34:03 +0100"
 #endif
 
 #define BUILD_DESC_FROM_COMMIT(maj,min,rev,build,commit) \

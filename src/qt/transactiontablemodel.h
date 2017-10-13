@@ -8,10 +8,11 @@
 #include <QAbstractTableModel>
 #include <QStringList>
 
-class CWallet;
-class TransactionTablePriv;
 class TransactionRecord;
+class TransactionTablePriv;
 class WalletModel;
+
+class CWallet;
 
 /** UI model for the transaction table of a wallet.
  */
@@ -52,7 +53,9 @@ public:
         /** Is transaction confirmed? */
         ConfirmedRole,
         /** Formatted amount, without brackets when unconfirmed */
-        FormattedAmountRole
+        FormattedAmountRole,
+        /** Transaction status (TransactionRecord::Status) */
+        StatusRole
     };
 
     int rowCount(const QModelIndex &parent) const;

@@ -7,17 +7,17 @@
 
 #include <QWidget>
 
-class TransactionFilterProxy;
 class WalletModel;
+class TransactionFilterProxy;
 
 QT_BEGIN_NAMESPACE
-class QComboBox;
-class QDateTimeEdit;
-class QFrame;
-class QLineEdit;
-class QMenu;
-class QModelIndex;
 class QTableView;
+class QComboBox;
+class QLineEdit;
+class QModelIndex;
+class QMenu;
+class QFrame;
+class QDateTimeEdit;
 QT_END_NAMESPACE
 
 /** Widget showing the transaction list for a wallet, including a filter row.
@@ -74,9 +74,6 @@ private slots:
 
 signals:
     void doubleClicked(const QModelIndex&);
-
-    /**  Fired when a message should be reported to the user */
-    void message(const QString &title, const QString &message, unsigned int style);
 
 public slots:
     void chooseDate(int idx);

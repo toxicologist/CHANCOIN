@@ -1,27 +1,23 @@
 //
 // Unit tests for denial-of-service detection/prevention code
 //
-
-
-
-#include "bignum.h"
-#include "keystore.h"
-#include "main.h"
-#include "net.h"
-#include "script.h"
-#include "serialize.h"
-
-#include <stdint.h>
+#include <algorithm>
 
 #include <boost/assign/list_of.hpp> // for 'map_list_of()'
 #include <boost/date_time/posix_time/posix_time_types.hpp>
-#include <boost/foreach.hpp>
 #include <boost/test/unit_test.hpp>
+#include <boost/foreach.hpp>
+
+#include "main.h"
+#include "wallet.h"
+#include "net.h"
+#include "util.h"
+
+#include <stdint.h>
 
 // Tests this internal-to-main.cpp method:
 extern bool AddOrphanTx(const CTransaction& tx);
 extern unsigned int LimitOrphanTxSize(unsigned int nMaxOrphans);
-extern void Misbehaving(NodeId nodeid, int howmuch);
 extern std::map<uint256, CTransaction> mapOrphanTransactions;
 extern std::map<uint256, std::set<uint256> > mapOrphanTransactionsByPrev;
 
@@ -29,7 +25,7 @@ CService ip(uint32_t i)
 {
     struct in_addr s;
     s.s_addr = i;
-    return CService(CNetAddr(s), Params().GetDefaultPort());
+    return CService(CNetAddr(s), GetDefaultPort());
 }
 
 BOOST_AUTO_TEST_SUITE(DoS_tests)
@@ -39,21 +35,16 @@ BOOST_AUTO_TEST_CASE(DoS_banning)
     CNode::ClearBanned();
     CAddress addr1(ip(0xa0b0c001));
     CNode dummyNode1(INVALID_SOCKET, addr1, "", true);
-    dummyNode1.nVersion = 1;
-    Misbehaving(dummyNode1.GetId(), 100); // Should get banned
-    SendMessages(&dummyNode1, false);
+    dummyNode1.Misbehaving(100); // Should get banned
     BOOST_CHECK(CNode::IsBanned(addr1));
     BOOST_CHECK(!CNode::IsBanned(ip(0xa0b0c001|0x0000ff00))); // Different IP, not banned
 
     CAddress addr2(ip(0xa0b0c002));
     CNode dummyNode2(INVALID_SOCKET, addr2, "", true);
-    dummyNode2.nVersion = 1;
-    Misbehaving(dummyNode2.GetId(), 50);
-    SendMessages(&dummyNode2, false);
+    dummyNode2.Misbehaving(50);
     BOOST_CHECK(!CNode::IsBanned(addr2)); // 2 not banned yet...
     BOOST_CHECK(CNode::IsBanned(addr1));  // ... but 1 still should be
-    Misbehaving(dummyNode2.GetId(), 50);
-    SendMessages(&dummyNode2, false);
+    dummyNode2.Misbehaving(50);
     BOOST_CHECK(CNode::IsBanned(addr2));
 }
 
@@ -63,15 +54,11 @@ BOOST_AUTO_TEST_CASE(DoS_banscore)
     mapArgs["-banscore"] = "111"; // because 11 is my favorite number
     CAddress addr1(ip(0xa0b0c001));
     CNode dummyNode1(INVALID_SOCKET, addr1, "", true);
-    dummyNode1.nVersion = 1;
-    Misbehaving(dummyNode1.GetId(), 100);
-    SendMessages(&dummyNode1, false);
+    dummyNode1.Misbehaving(100);
     BOOST_CHECK(!CNode::IsBanned(addr1));
-    Misbehaving(dummyNode1.GetId(), 10);
-    SendMessages(&dummyNode1, false);
+    dummyNode1.Misbehaving(10);
     BOOST_CHECK(!CNode::IsBanned(addr1));
-    Misbehaving(dummyNode1.GetId(), 1);
-    SendMessages(&dummyNode1, false);
+    dummyNode1.Misbehaving(1);
     BOOST_CHECK(CNode::IsBanned(addr1));
     mapArgs.erase("-banscore");
 }
@@ -79,15 +66,13 @@ BOOST_AUTO_TEST_CASE(DoS_banscore)
 BOOST_AUTO_TEST_CASE(DoS_bantime)
 {
     CNode::ClearBanned();
-    int64_t nStartTime = GetTime();
+    int64 nStartTime = GetTime();
     SetMockTime(nStartTime); // Overrides future calls to GetTime()
 
     CAddress addr(ip(0xa0b0c001));
     CNode dummyNode(INVALID_SOCKET, addr, "", true);
-    dummyNode.nVersion = 1;
 
-    Misbehaving(dummyNode.GetId(), 100);
-    SendMessages(&dummyNode, false);
+    dummyNode.Misbehaving(100);
     BOOST_CHECK(CNode::IsBanned(addr));
 
     SetMockTime(nStartTime+60*60);
@@ -97,11 +82,11 @@ BOOST_AUTO_TEST_CASE(DoS_bantime)
     BOOST_CHECK(!CNode::IsBanned(addr));
 }
 
-static bool CheckNBits(unsigned int nbits1, int64_t time1, unsigned int nbits2, int64_t time2)\
+static bool CheckNBits(unsigned int nbits1, int64 time1, unsigned int nbits2, int64 time2)\
 {
     if (time1 > time2)
         return CheckNBits(nbits2, time2, nbits1, time1);
-    int64_t deltaTime = time2-time1;
+    int64 deltaTime = time2-time1;
 
     CBigNum required;
     required.SetCompact(ComputeMinWork(nbits1, deltaTime));
@@ -116,7 +101,7 @@ BOOST_AUTO_TEST_CASE(DoS_checknbits)
 
     // Timestamps,nBits from the bitcoin block chain.
     // These are the block-chain checkpoint blocks
-    typedef std::map<int64_t, unsigned int> BlockData;
+    typedef std::map<int64, unsigned int> BlockData;
     BlockData chainData =
         map_list_of(1239852051,486604799)(1262749024,486594666)
         (1279305360,469854461)(1280200847,469830746)(1281678674,469809688)

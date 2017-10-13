@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2014 The Bitcoin developers
+// Copyright (c) 2011-2013 The Bitcoin developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -6,21 +6,18 @@
 #include "ui_rpcconsole.h"
 
 #include "clientmodel.h"
+#include "bitcoinrpc.h"
 #include "guiutil.h"
 
-#include "rpcserver.h"
-#include "rpcclient.h"
-
-#include "json/json_spirit_value.h"
-#include <openssl/crypto.h>
-#include <QKeyEvent>
-#include <QScrollBar>
-#include <QThread>
 #include <QTime>
-
+#include <QThread>
+#include <QKeyEvent>
 #if QT_VERSION < 0x050000
 #include <QUrl>
 #endif
+#include <QScrollBar>
+
+#include <openssl/crypto.h>
 
 // TODO: add a scrollback limit, as there is currently none
 // TODO: make it possible to filter out categories (esp debug messages when implemented)
@@ -28,8 +25,6 @@
 
 const int CONSOLE_HISTORY = 50;
 const QSize ICON_SIZE(24, 24);
-
-const int INITIAL_TRAFFIC_GRAPH_MINS = 30;
 
 const struct {
     const char *url;
@@ -196,10 +191,10 @@ RPCConsole::RPCConsole(QWidget *parent) :
     historyPtr(0)
 {
     ui->setupUi(this);
-    GUIUtil::restoreWindowGeometry("nRPCConsoleWindow", this->size(), this);
 
 #ifndef Q_OS_MAC
     ui->openDebugLogfileButton->setIcon(QIcon(":/icons/export"));
+    ui->showCLOptionsButton->setIcon(QIcon(":/icons/options"));
 #endif
 
     // Install event filter for up and down arrow
@@ -207,20 +202,17 @@ RPCConsole::RPCConsole(QWidget *parent) :
     ui->messagesWidget->installEventFilter(this);
 
     connect(ui->clearButton, SIGNAL(clicked()), this, SLOT(clear()));
-    connect(ui->btnClearTrafficGraph, SIGNAL(clicked()), ui->trafficGraph, SLOT(clear()));
 
     // set OpenSSL version label
     ui->openSSLVersion->setText(SSLeay_version(SSLEAY_VERSION));
 
     startExecutor();
-    setTrafficGraphRange(INITIAL_TRAFFIC_GRAPH_MINS);
 
     clear();
 }
 
 RPCConsole::~RPCConsole()
 {
-    GUIUtil::saveWindowGeometry("nRPCConsoleWindow", this);
     emit stopExecutor();
     delete ui;
 }
@@ -263,19 +255,12 @@ bool RPCConsole::eventFilter(QObject* obj, QEvent *event)
 
 void RPCConsole::setClientModel(ClientModel *model)
 {
-    clientModel = model;
-    ui->trafficGraph->setClientModel(model);
+    this->clientModel = model;
     if(model)
     {
-        // Keep up to date with client
-        setNumConnections(model->getNumConnections());
+        // Subscribe to information, replies, messages, errors
         connect(model, SIGNAL(numConnectionsChanged(int)), this, SLOT(setNumConnections(int)));
-
-        setNumBlocks(model->getNumBlocks(), model->getNumBlocksOfPeers());
         connect(model, SIGNAL(numBlocksChanged(int,int)), this, SLOT(setNumBlocks(int,int)));
-
-        updateTrafficStats(model->getTotalBytesRecv(), model->getTotalBytesSent());
-        connect(model, SIGNAL(bytesChanged(quint64,quint64)), this, SLOT(updateTrafficStats(quint64, quint64)));
 
         // Provide initial values
         ui->clientVersion->setText(model->formatFullVersion());
@@ -283,7 +268,8 @@ void RPCConsole::setClientModel(ClientModel *model)
         ui->buildDate->setText(model->formatBuildDate());
         ui->startupTime->setText(model->formatClientStartupTime());
 
-        ui->networkName->setText(model->getNetworkName());
+        setNumConnections(model->getNumConnections());
+        ui->isTestNet->setChecked(model->isTestNet());
     }
 }
 
@@ -320,13 +306,13 @@ void RPCConsole::clear()
     ui->messagesWidget->document()->setDefaultStyleSheet(
                 "table { }"
                 "td.time { color: #808080; padding-top: 3px; } "
-                "td.message { font-family: monospace; font-size: 12px; } " // Todo: Remove fixed font-size
+                "td.message { font-family: Monospace; font-size: 12px; } "
                 "td.cmd-request { color: #006060; } "
                 "td.cmd-error { color: red; } "
                 "b { color: #006060; } "
                 );
 
-    message(CMD_REPLY, (tr("Welcome to the Bitcoin RPC console.") + "<br>" +
+    message(CMD_REPLY, (tr("Welcome to the Litecoin RPC console.") + "<br>" +
                         tr("Use up and down arrows to navigate history, and <b>Ctrl-L</b> to clear screen.") + "<br>" +
                         tr("Type <b>help</b> for an overview of available commands.")), true);
 }
@@ -440,43 +426,8 @@ void RPCConsole::scrollToEnd()
     scrollbar->setValue(scrollbar->maximum());
 }
 
-void RPCConsole::on_sldGraphRange_valueChanged(int value)
+void RPCConsole::on_showCLOptionsButton_clicked()
 {
-    const int multiplier = 5; // each position on the slider represents 5 min
-    int mins = value * multiplier;
-    setTrafficGraphRange(mins);
-}
-
-QString RPCConsole::FormatBytes(quint64 bytes)
-{
-    if(bytes < 1024)
-        return QString(tr("%1 B")).arg(bytes);
-    if(bytes < 1024 * 1024)
-        return QString(tr("%1 KB")).arg(bytes / 1024);
-    if(bytes < 1024 * 1024 * 1024)
-        return QString(tr("%1 MB")).arg(bytes / 1024 / 1024);
-
-    return QString(tr("%1 GB")).arg(bytes / 1024 / 1024 / 1024);
-}
-
-void RPCConsole::setTrafficGraphRange(int mins)
-{
-    ui->trafficGraph->setGraphRangeMins(mins);
-    if(mins < 60) {
-        ui->lblGraphRange->setText(QString(tr("%1 m")).arg(mins));
-    } else {
-        int hours = mins / 60;
-        int minsLeft = mins % 60;
-        if(minsLeft == 0) {
-            ui->lblGraphRange->setText(QString(tr("%1 h")).arg(hours));
-        } else {
-            ui->lblGraphRange->setText(QString(tr("%1 h %2 m")).arg(hours).arg(minsLeft));
-        }
-    }
-}
-
-void RPCConsole::updateTrafficStats(quint64 totalBytesIn, quint64 totalBytesOut)
-{
-    ui->lblBytesIn->setText(FormatBytes(totalBytesIn));
-    ui->lblBytesOut->setText(FormatBytes(totalBytesOut));
+    GUIUtil::HelpMessageBox help;
+    help.exec();
 }

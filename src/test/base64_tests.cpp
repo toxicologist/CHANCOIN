@@ -1,8 +1,8 @@
-
-
-#include "util.h"
-
 #include <boost/test/unit_test.hpp>
+
+#include "main.h"
+#include "wallet.h"
+#include "util.h"
 
 BOOST_AUTO_TEST_SUITE(base64_tests)
 

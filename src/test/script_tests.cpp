@@ -1,34 +1,25 @@
-#include "script.h"
-
-#include "data/script_invalid.json.h"
-#include "data/script_valid.json.h"
-
-#include "key.h"
-#include "keystore.h"
-#include "main.h"
-
+#include <iostream>
 #include <fstream>
-#include <stdint.h>
-#include <string>
 #include <vector>
-
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/algorithm/string/split.hpp>
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
 #include <boost/foreach.hpp>
+#include <boost/preprocessor/stringize.hpp>
 #include <boost/test/unit_test.hpp>
 #include "json/json_spirit_reader_template.h"
-#include "json/json_spirit_utils.h"
 #include "json/json_spirit_writer_template.h"
+#include "json/json_spirit_utils.h"
+
+#include "main.h"
+#include "wallet.h"
 
 using namespace std;
 using namespace json_spirit;
 using namespace boost::algorithm;
 
-extern uint256 SignatureHash(const CScript &scriptCode, const CTransaction& txTo, unsigned int nIn, int nHashType);
+extern uint256 SignatureHash(CScript scriptCode, const CTransaction& txTo, unsigned int nIn, int nHashType);
 
 static const unsigned int flags = SCRIPT_VERIFY_P2SH | SCRIPT_VERIFY_STRICTENC;
 
@@ -41,12 +32,8 @@ ParseScript(string s)
 
     if (mapOpNames.size() == 0)
     {
-        for (int op = 0; op <= OP_NOP10; op++)
+        for (int op = OP_NOP; op <= OP_NOP10; op++)
         {
-            // Allow OP_RESERVED to get into mapOpNames
-            if (op < OP_NOP && op != OP_RESERVED)
-                continue;
-
             const char* name = GetOpName((opcodetype)op);
             if (strcmp(name, "OP_UNKNOWN") == 0)
                 continue;
@@ -67,7 +54,7 @@ ParseScript(string s)
             (starts_with(w, "-") && all(string(w.begin()+1, w.end()), is_digit())))
         {
             // Number
-            int64_t n = atoi64(w);
+            int64 n = atoi64(w);
             result << n;
         }
         else if (starts_with(w, "0x") && IsHex(string(w.begin()+2, w.end())))
@@ -85,7 +72,7 @@ ParseScript(string s)
         }
         else if (mapOpNames.count(w))
         {
-            // opcode, e.g. OP_ADD or ADD:
+            // opcode, e.g. OP_ADD or OP_1:
             result << mapOpNames[w];
         }
         else
@@ -99,15 +86,34 @@ ParseScript(string s)
 }
 
 Array
-read_json(const std::string& jsondata)
+read_json(const std::string& filename)
 {
-    Value v;
+    namespace fs = boost::filesystem;
+    fs::path testFile = fs::current_path() / "test" / "data" / filename;
 
-    if (!read_string(jsondata, v) || v.type() != array_type)
+#ifdef TEST_DATA_DIR
+    if (!fs::exists(testFile))
     {
-        BOOST_ERROR("Parse error.");
+        testFile = fs::path(BOOST_PP_STRINGIZE(TEST_DATA_DIR)) / filename;
+    }
+#endif
+
+    ifstream ifs(testFile.string().c_str(), ifstream::in);
+    Value v;
+    if (!read_stream(ifs, v))
+    {
+        if (ifs.fail())
+            BOOST_ERROR("Cound not find/open " << filename);
+        else
+            BOOST_ERROR("JSON syntax error in " << filename);
         return Array();
     }
+    if (v.type() != array_type)
+    {
+        BOOST_ERROR(filename << " does not contain a json array");
+        return Array();
+    }
+
     return v.get_array();
 }
 
@@ -120,7 +126,7 @@ BOOST_AUTO_TEST_CASE(script_valid)
     // Inner arrays are [ "scriptSig", "scriptPubKey" ]
     // ... where scriptSig and scriptPubKey are stringified
     // scripts.
-    Array tests = read_json(std::string(json_tests::script_valid, json_tests::script_valid + sizeof(json_tests::script_valid)));
+    Array tests = read_json("script_valid.json");
 
     BOOST_FOREACH(Value& tv, tests)
     {
@@ -144,7 +150,7 @@ BOOST_AUTO_TEST_CASE(script_valid)
 BOOST_AUTO_TEST_CASE(script_invalid)
 {
     // Scripts that should evaluate as invalid
-    Array tests = read_json(std::string(json_tests::script_invalid, json_tests::script_invalid + sizeof(json_tests::script_invalid)));
+    Array tests = read_json("script_invalid.json");
 
     BOOST_FOREACH(Value& tv, tests)
     {

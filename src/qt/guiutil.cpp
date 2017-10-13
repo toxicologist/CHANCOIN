@@ -1,17 +1,36 @@
-// Copyright (c) 2011-2013 The Bitcoin developers
+// Copyright (c) 2011-2014 The Bitcoin developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
+#include <QApplication>
 
 #include "guiutil.h"
 
 #include "bitcoinaddressvalidator.h"
-#include "bitcoinunits.h"
-#include "qvalidatedlineedit.h"
 #include "walletmodel.h"
+#include "bitcoinunits.h"
 
-#include "core.h"
-#include "init.h"
 #include "util.h"
+#include "init.h"
+
+#include <QDateTime>
+#include <QDoubleValidator>
+#include <QFont>
+#include <QLineEdit>
+#if QT_VERSION >= 0x050000
+#include <QUrlQuery>
+#else
+#include <QUrl>
+#endif
+#include <QTextDocument> // for Qt::mightBeRichText
+#include <QAbstractItemView>
+#include <QClipboard>
+#include <QFileDialog>
+#include <QDesktopServices>
+#include <QThread>
+
+#include <boost/filesystem.hpp>
+#include <boost/filesystem/fstream.hpp>
 
 #ifdef WIN32
 #ifdef _WIN32_WINNT
@@ -26,32 +45,9 @@
 #ifndef NOMINMAX
 #define NOMINMAX
 #endif
-#include "shellapi.h"
-#include "shlobj.h"
 #include "shlwapi.h"
-#endif
-
-#include <boost/filesystem.hpp>
-#include <boost/filesystem/fstream.hpp>
-
-#include <QAbstractItemView>
-#include <QApplication>
-#include <QClipboard>
-#include <QDateTime>
-#include <QDesktopServices>
-#include <QDesktopWidget>
-#include <QDoubleValidator>
-#include <QFileDialog>
-#include <QFont>
-#include <QLineEdit>
-#include <QSettings>
-#include <QTextDocument> // for Qt::mightBeRichText
-#include <QThread>
-
-#if QT_VERSION < 0x050000
-#include <QUrl>
-#else
-#include <QUrlQuery>
+#include "shlobj.h"
+#include "shellapi.h"
 #endif
 
 namespace GUIUtil {
@@ -73,16 +69,11 @@ QFont bitcoinAddressFont()
     return font;
 }
 
-void setupAddressWidget(QValidatedLineEdit *widget, QWidget *parent)
+void setupAddressWidget(QLineEdit *widget, QWidget *parent)
 {
-    parent->setFocusProxy(widget);
-
+    widget->setMaxLength(BitcoinAddressValidator::MaxAddressLength);
+    widget->setValidator(new BitcoinAddressValidator(parent));
     widget->setFont(bitcoinAddressFont());
-#if QT_VERSION >= 0x040700
-    widget->setPlaceholderText(QObject::tr("Enter a Bitcoin address (e.g. 1NS17iag9jJgTHD1VXjvLCEnZuQ3rJDE9L)"));
-#endif
-    widget->setValidator(new BitcoinAddressEntryValidator(parent));
-    widget->setCheckValidator(new BitcoinAddressCheckValidator(parent));
 }
 
 void setupAmountWidget(QLineEdit *widget, QWidget *parent)
@@ -96,8 +87,8 @@ void setupAmountWidget(QLineEdit *widget, QWidget *parent)
 
 bool parseBitcoinURI(const QUrl &uri, SendCoinsRecipient *out)
 {
-    // return if URI is not valid or is no bitcoin: URI
-    if(!uri.isValid() || uri.scheme() != QString("bitcoin"))
+    // return if URI is not valid or is no bitcoin URI
+    if(!uri.isValid() || uri.scheme() != QString("litecoin"))
         return false;
 
     SendCoinsRecipient rv;
@@ -122,11 +113,6 @@ bool parseBitcoinURI(const QUrl &uri, SendCoinsRecipient *out)
         if (i->first == "label")
         {
             rv.label = i->second;
-            fShouldReturnFalse = false;
-        }
-        if (i->first == "message")
-        {
-            rv.message = i->second;
             fShouldReturnFalse = false;
         }
         else if (i->first == "amount")
@@ -157,48 +143,12 @@ bool parseBitcoinURI(QString uri, SendCoinsRecipient *out)
     //
     //    Cannot handle this later, because bitcoin:// will cause Qt to see the part after // as host,
     //    which will lower-case it (and thus invalidate the address).
-    if(uri.startsWith("bitcoin://", Qt::CaseInsensitive))
+    if(uri.startsWith("litecoin://"))
     {
-        uri.replace(0, 10, "bitcoin:");
+        uri.replace(0, 11, "litecoin:");
     }
     QUrl uriInstance(uri);
     return parseBitcoinURI(uriInstance, out);
-}
-
-QString formatBitcoinURI(const SendCoinsRecipient &info)
-{
-    QString ret = QString("bitcoin:%1").arg(info.address);
-    int paramCount = 0;
-
-    if (info.amount)
-    {
-        ret += QString("?amount=%1").arg(BitcoinUnits::format(BitcoinUnits::BTC, info.amount));
-        paramCount++;
-    }
-
-    if (!info.label.isEmpty())
-    {
-        QString lbl(QUrl::toPercentEncoding(info.label));
-        ret += QString("%1label=%2").arg(paramCount == 0 ? "?" : "&").arg(lbl);
-        paramCount++;
-    }
-
-    if (!info.message.isEmpty())
-    {
-        QString msg(QUrl::toPercentEncoding(info.message));;
-        ret += QString("%1message=%2").arg(paramCount == 0 ? "?" : "&").arg(msg);
-        paramCount++;
-    }
-
-    return ret;
-}
-
-bool isDust(const QString& address, qint64 amount)
-{
-    CTxDestination dest = CBitcoinAddress(address.toStdString()).Get();
-    CScript script; script.SetDestination(dest);
-    CTxOut txOut(amount, script);
-    return txOut.IsDust(CTransaction::nMinRelayTxFee);
 }
 
 QString HtmlEscape(const QString& str, bool fMultiLine)
@@ -228,14 +178,23 @@ void copyEntryData(QAbstractItemView *view, int column, int role)
 
     if(!selection.isEmpty())
     {
-        // Copy first item
-        setClipboard(selection.at(0).data(role).toString());
+        // Copy first item (global clipboard)
+        QApplication::clipboard()->setText(selection.at(0).data(role).toString(), QClipboard::Clipboard);
+        // Copy first item (global mouse selection for e.g. X11 - NOP on Windows)
+        QApplication::clipboard()->setText(selection.at(0).data(role).toString(), QClipboard::Selection);
     }
 }
 
-QString getSaveFileName(QWidget *parent, const QString &caption, const QString &dir,
-    const QString &filter,
-    QString *selectedSuffixOut)
+void setClipboard(const QString& str)
+{
+    QApplication::clipboard()->setText(str, QClipboard::Clipboard);
+    QApplication::clipboard()->setText(str, QClipboard::Selection);
+}
+
+QString getSaveFileName(QWidget *parent, const QString &caption,
+                                 const QString &dir,
+                                 const QString &filter,
+                                 QString *selectedSuffixOut)
 {
     QString selectedFilter;
     QString myDir;
@@ -251,8 +210,7 @@ QString getSaveFileName(QWidget *parent, const QString &caption, const QString &
     {
         myDir = dir;
     }
-    /* Directly convert path to native OS path separators */
-    QString result = QDir::toNativeSeparators(QFileDialog::getSaveFileName(parent, caption, myDir, filter, &selectedFilter));
+    QString result = QFileDialog::getSaveFileName(parent, caption, myDir, filter, &selectedFilter);
 
     /* Extract first suffix from filter pattern "Description (*.foo)" or "Description (*.foo *.bar ...) */
     QRegExp filter_re(".* \\(\\*\\.(.*)[ \\)]");
@@ -278,41 +236,6 @@ QString getSaveFileName(QWidget *parent, const QString &caption, const QString &
     /* Return selected suffix if asked to */
     if(selectedSuffixOut)
     {
-        *selectedSuffixOut = selectedSuffix;
-    }
-    return result;
-}
-
-QString getOpenFileName(QWidget *parent, const QString &caption, const QString &dir,
-    const QString &filter,
-    QString *selectedSuffixOut)
-{
-    QString selectedFilter;
-    QString myDir;
-    if(dir.isEmpty()) // Default to user documents location
-    {
-#if QT_VERSION < 0x050000
-        myDir = QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation);
-#else
-        myDir = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
-#endif
-    }
-    else
-    {
-        myDir = dir;
-    }
-    /* Directly convert path to native OS path separators */
-    QString result = QDir::toNativeSeparators(QFileDialog::getOpenFileName(parent, caption, myDir, filter, &selectedFilter));
-
-    if(selectedSuffixOut)
-    {
-        /* Extract first suffix from filter pattern "Description (*.foo)" or "Description (*.foo *.bar ...) */
-        QRegExp filter_re(".* \\(\\*\\.(.*)[ \\)]");
-        QString selectedSuffix;
-        if(filter_re.exactMatch(selectedFilter))
-        {
-            selectedSuffix = filter_re.cap(1);
-        }
         *selectedSuffixOut = selectedSuffix;
     }
     return result;
@@ -382,7 +305,7 @@ bool ToolTipToRichTextFilter::eventFilter(QObject *obj, QEvent *evt)
 #ifdef WIN32
 boost::filesystem::path static StartupShortcutPath()
 {
-    return GetSpecialFolderPath(CSIDL_STARTUP) / "Bitcoin.lnk";
+    return GetSpecialFolderPath(CSIDL_STARTUP) / "Litecoin.lnk";
 }
 
 bool GetStartOnSystemStartup()
@@ -464,7 +387,7 @@ boost::filesystem::path static GetAutostartDir()
 
 boost::filesystem::path static GetAutostartFilePath()
 {
-    return GetAutostartDir() / "bitcoin.desktop";
+    return GetAutostartDir() / "litecoin.desktop";
 }
 
 bool GetStartOnSystemStartup()
@@ -505,7 +428,7 @@ bool SetStartOnSystemStartup(bool fAutoStart)
         // Write a bitcoin.desktop file to the autostart directory:
         optionFile << "[Desktop Entry]\n";
         optionFile << "Type=Application\n";
-        optionFile << "Name=Bitcoin\n";
+        optionFile << "Name=Litecoin\n";
         optionFile << "Exec=" << pszExePath << " -min\n";
         optionFile << "Terminal=false\n";
         optionFile << "Hidden=false\n";
@@ -513,7 +436,6 @@ bool SetStartOnSystemStartup(bool fAutoStart)
     }
     return true;
 }
-
 
 #elif defined(Q_OS_MAC)
 // based on: https://github.com/Mozketo/LaunchAtLoginController/blob/master/LaunchAtLoginController.m
@@ -574,33 +496,44 @@ bool SetStartOnSystemStartup(bool fAutoStart) { return false; }
 
 #endif
 
-void saveWindowGeometry(const QString& strSetting, QWidget *parent)
+HelpMessageBox::HelpMessageBox(QWidget *parent) :
+    QMessageBox(parent)
 {
-    QSettings settings;
-    settings.setValue(strSetting + "Pos", parent->pos());
-    settings.setValue(strSetting + "Size", parent->size());
+    header = tr("Litecoin-Qt") + " " + tr("version") + " " +
+        QString::fromStdString(FormatFullVersion()) + "\n\n" +
+        tr("Usage:") + "\n" +
+        "  litecoin-qt [" + tr("command-line options") + "]                     " + "\n";
+
+    coreOptions = QString::fromStdString(HelpMessage());
+
+    uiOptions = tr("UI options") + ":\n" +
+        "  -lang=<lang>           " + tr("Set language, for example \"de_DE\" (default: system locale)") + "\n" +
+        "  -min                   " + tr("Start minimized") + "\n" +
+        "  -splash                " + tr("Show splash screen on startup (default: 1)") + "\n";
+
+    setWindowTitle(tr("Litecoin-Qt"));
+    setTextFormat(Qt::PlainText);
+    // setMinimumWidth is ignored for QMessageBox so put in non-breaking spaces to make it wider.
+    setText(header + QString(QChar(0x2003)).repeated(50));
+    setDetailedText(coreOptions + "\n" + uiOptions);
 }
 
-void restoreWindowGeometry(const QString& strSetting, const QSize& defaultSize, QWidget *parent)
+void HelpMessageBox::printToConsole()
 {
-    QSettings settings;
-    QPoint pos = settings.value(strSetting + "Pos").toPoint();
-    QSize size = settings.value(strSetting + "Size", defaultSize).toSize();
-
-    if (!pos.x() && !pos.y()) {
-        QRect screen = QApplication::desktop()->screenGeometry();
-        pos.setX((screen.width() - size.width()) / 2);
-        pos.setY((screen.height() - size.height()) / 2);
-    }
-
-    parent->resize(size);
-    parent->move(pos);
+    // On other operating systems, the expected action is to print the message to the console.
+    QString strUsage = header + "\n" + coreOptions + "\n" + uiOptions;
+    fprintf(stdout, "%s", strUsage.toStdString().c_str());
 }
 
-void setClipboard(const QString& str)
+void HelpMessageBox::showOrPrint()
 {
-    QApplication::clipboard()->setText(str, QClipboard::Clipboard);
-    QApplication::clipboard()->setText(str, QClipboard::Selection);
+#if defined(WIN32)
+        // On Windows, show a message box, as there is no stderr/stdout in windowed applications
+        exec();
+#else
+        // On other operating systems, print help text to console
+        printToConsole();
+#endif
 }
 
 } // namespace GUIUtil

@@ -5,21 +5,19 @@
 #include "clientmodel.h"
 
 #include "guiconstants.h"
+#include "optionsmodel.h"
+#include "addresstablemodel.h"
+#include "transactiontablemodel.h"
 
 #include "alert.h"
-#include "chainparams.h"
-#include "checkpoints.h"
 #include "main.h"
-#include "net.h"
+#include "checkpoints.h"
 #include "ui_interface.h"
 
-#include <stdint.h>
-
 #include <QDateTime>
-#include <QDebug>
 #include <QTimer>
 
-static const int64_t nClientStartupTime = GetTime();
+static const int64 nClientStartupTime = GetTime();
 
 ClientModel::ClientModel(OptionsModel *optionsModel, QObject *parent) :
     QObject(parent), optionsModel(optionsModel),
@@ -28,8 +26,9 @@ ClientModel::ClientModel(OptionsModel *optionsModel, QObject *parent) :
     numBlocksAtStartup(-1), pollTimer(0)
 {
     pollTimer = new QTimer(this);
+    pollTimer->setInterval(MODEL_UPDATE_DELAY);
+    pollTimer->start();
     connect(pollTimer, SIGNAL(timeout()), this, SLOT(updateTimer()));
-    pollTimer->start(MODEL_UPDATE_DELAY);
 
     subscribeToCoreSignals();
 }
@@ -46,7 +45,7 @@ int ClientModel::getNumConnections() const
 
 int ClientModel::getNumBlocks() const
 {
-    return chainActive.Height();
+    return nBestHeight;
 }
 
 int ClientModel::getNumBlocksAtStartup()
@@ -55,27 +54,19 @@ int ClientModel::getNumBlocksAtStartup()
     return numBlocksAtStartup;
 }
 
-quint64 ClientModel::getTotalBytesRecv() const
-{
-    return CNode::GetTotalBytesRecv();
-}
-
-quint64 ClientModel::getTotalBytesSent() const
-{
-    return CNode::GetTotalBytesSent();
-}
-
 QDateTime ClientModel::getLastBlockDate() const
 {
-    if (chainActive.Tip())
-        return QDateTime::fromTime_t(chainActive.Tip()->GetBlockTime());
+    if (pindexBest)
+        return QDateTime::fromTime_t(pindexBest->GetBlockTime());
+    else if(!isTestNet())
+        return QDateTime::fromTime_t(1231006505); // Genesis block's time
     else
-        return QDateTime::fromTime_t(Params().GenesisBlock().nTime); // Genesis block's time of current network
+        return QDateTime::fromTime_t(1296688602); // Genesis block's time (testnet)
 }
 
 double ClientModel::getVerificationProgress() const
 {
-    return Checkpoints::GuessVerificationProgress(chainActive.Tip());
+    return Checkpoints::GuessVerificationProgress(pindexBest);
 }
 
 void ClientModel::updateTimer()
@@ -97,8 +88,6 @@ void ClientModel::updateTimer()
         // ensure we return the maximum of newNumBlocksOfPeers and newNumBlocks to not create weird displays in the GUI
         emit numBlocksChanged(newNumBlocks, std::max(newNumBlocksOfPeers, newNumBlocks));
     }
-
-    emit bytesChanged(getTotalBytesRecv(), getTotalBytesSent());
 }
 
 void ClientModel::updateNumConnections(int numConnections)
@@ -123,12 +112,9 @@ void ClientModel::updateAlert(const QString &hash, int status)
     emit alertsChanged(getStatusBarWarnings());
 }
 
-QString ClientModel::getNetworkName() const
+bool ClientModel::isTestNet() const
 {
-    QString netname(QString::fromStdString(Params().DataDir()));
-    if(netname.isEmpty())
-        netname = "main";
-    return netname;
+    return fTestNet;
 }
 
 bool ClientModel::inInitialBlockDownload() const
@@ -197,14 +183,14 @@ static void NotifyBlocksChanged(ClientModel *clientmodel)
 
 static void NotifyNumConnectionsChanged(ClientModel *clientmodel, int newNumConnections)
 {
-    // Too noisy: qDebug() << "NotifyNumConnectionsChanged : " + QString::number(newNumConnections);
+    // Too noisy: OutputDebugStringF("NotifyNumConnectionsChanged %i\n", newNumConnections);
     QMetaObject::invokeMethod(clientmodel, "updateNumConnections", Qt::QueuedConnection,
                               Q_ARG(int, newNumConnections));
 }
 
 static void NotifyAlertChanged(ClientModel *clientmodel, const uint256 &hash, ChangeType status)
 {
-    qDebug() << "NotifyAlertChanged : " + QString::fromStdString(hash.GetHex()) + " status=" + QString::number(status);
+    OutputDebugStringF("NotifyAlertChanged %s status=%i\n", hash.GetHex().c_str(), status);
     QMetaObject::invokeMethod(clientmodel, "updateAlert", Qt::QueuedConnection,
                               Q_ARG(QString, QString::fromStdString(hash.GetHex())),
                               Q_ARG(int, status));
